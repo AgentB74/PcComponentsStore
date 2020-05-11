@@ -16,12 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from basic import views
+from users import views as user_views
+from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homeView),
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
+    url(r'^api/customers/$', user_views.customers_list),
+    url(r'^api/customers/(?P<pk>[0-9]+)$', user_views.customers_detail),
 
     # path('', HomeView.as_view(), name='home'),
     # path('about/', AboutView.as_view(), name='about'),
