@@ -57,6 +57,9 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
 )
 
+# REDIS_HOST = 'localhost'
+# REDIS_PORT = 6379
+
 ROOT_URLCONF = 'PcComponentsStore.urls'
 
 AUTHENTICATION_BACKENDS = [

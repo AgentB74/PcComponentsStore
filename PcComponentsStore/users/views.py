@@ -1,3 +1,4 @@
+import redis
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
@@ -13,12 +14,18 @@ from rest_framework import status
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import CustomUser
 from .serializers import *
+from django.conf import settings
 
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
+
+
+# # Connect to our Redis instance
+# redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
+#                                    port=settings.REDIS_PORT, db=0)
 
 
 @api_view(['GET', 'POST'])
