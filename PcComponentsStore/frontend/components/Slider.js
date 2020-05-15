@@ -42,6 +42,7 @@ export default class Slider extends React.Component {
                         // width="200"
                         // height="350"
                         alt="Second slide"
+                        style={test}
                     />
                     <Carousel.Caption>
                         <h3>Second slide label</h3>
@@ -56,6 +57,7 @@ export default class Slider extends React.Component {
                         // width="200"
                         // height="350"
                         alt="Third slide"
+                        style={test}
                     />
                     <Carousel.Caption>
                         <h3>Third slide label</h3>

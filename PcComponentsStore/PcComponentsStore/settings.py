@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'corsheaders',
+    'goods',
+    'orders',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +53,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+
+CART_SESSION_ID = 'cart'
 
 CORS_ORIGIN_ALLOW_ALL = False
 

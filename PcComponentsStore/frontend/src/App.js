@@ -6,6 +6,7 @@ import NavigationBar from "../components/NavigationBar";
 import Welcome from "../components/Welcome";
 import Footer from "../components/Footer";
 import Slider from "../components/Slider";
+import Header from "../components/Header";
 // import GameList from "./components/GameList";
 // import CreateGame from "./components/CreateGame";
 // import TicTacToeGame from "./components/TicTacToeGame"
@@ -20,6 +21,7 @@ export default class App extends Component {
         };
         return (
             <Router>
+                <Header/>
                 <NavigationBar/>
                 <Slider/>
                 <Container>

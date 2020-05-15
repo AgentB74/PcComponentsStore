@@ -21,9 +21,7 @@ export default class Welcome extends React.Component {
                         Добро пожаловать в магазин компьютерных комплектующих!{"\n"}
                         Этот сайт был создан для более удобного выбора частей ПК!
                     </p>
-
-                    <Button style={test} variant="primary">Подробнее</Button>
-
+                    <Button style={test} variant="light">Подробнее</Button>
                 </Jumbotron>
             </Col>
         );

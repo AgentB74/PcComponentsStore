@@ -26,6 +26,8 @@ urlpatterns = [
     path('users/', include('django.contrib.auth.urls')),
     url(r'^api/customers/$', user_views.customers_list),
     url(r'^api/customers/(?P<pk>[0-9]+)$', user_views.customers_detail),
+    path('cart/', include('cart.urls')),
+    path('orders/', include('orders.urls')),
 
     # path('', HomeView.as_view(), name='home'),
     # path('about/', AboutView.as_view(), name='about'),
