@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from basic import views
 from users import views as user_views
 from django.conf.urls import url
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +31,8 @@ urlpatterns = [
     url(r'^api/customers/(?P<pk>[0-9]+)$', user_views.customers_detail),
     path('cart/', include('cart.urls')),
     path('orders/', include('orders.urls')),
+    path('products/', include('goods.urls')),
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/img/favicon.ico'), name='favicon'),
 
     # path('', HomeView.as_view(), name='home'),
     # path('about/', AboutView.as_view(), name='about'),
@@ -40,3 +45,6 @@ urlpatterns = [
     # path('remove-item-from-cart/<slug>/', remove_single_item_from_cart,
     #      name='remove-single-item-from-cart'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

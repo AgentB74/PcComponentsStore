@@ -15,7 +15,7 @@
 {#{% endif %}#}
 {#</body>#}
 <head>
-  <title>{% block title %}Магазин игрушек{% endblock title %}</title>
+  <title>{% block title %}Магазин{% endblock title %}</title>
 </head>
 {% block content %}
   {% if user.is_authenticated %}
@@ -27,8 +27,8 @@
     <a href="{% url 'signup' %}">Зарегистрироваться</a>
   {% endif %}
   <h2>Просмотреть все заказы:</h2>
-{#  <a href="{% url 'products' %}"><div class="btn btn-info mb-4">Все товары</div></a>#}
-  <h2>Поиск заказов покупателя </h2>
+  <a href="{% url 'goods:product_list' %}"><div class="btn btn-info mb-4">Все товары</div></a>
+{#  <h2>Поиск заказов покупателя </h2>#}
   {% comment %}
   <form action="{% url 'search' %}" method="GET">
     {% csrf_token %}

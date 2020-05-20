@@ -1,7 +1,7 @@
 import React from "react";
 import {Navbar, Nav, Jumbotron} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHome} from "@fortawesome/free-solid-svg-icons";
+import {faHome, faShoppingBasket} from "@fortawesome/free-solid-svg-icons";
 
 import {Link} from "react-router-dom";
 
@@ -12,7 +12,7 @@ export default class NavigationBar extends React.Component {
         }
         const myFontSize2 = {
             fontSize: "22px",
-            marginLeft: "50%"
+            marginLeft: "45%"
         }
         const myMargin = {
             marginTop: "145px",
@@ -33,6 +33,7 @@ export default class NavigationBar extends React.Component {
 
                 </Nav>
                 <Nav className="mr-auto" style={myFontSize2}>
+                    <Link to={"/basket"} className="nav-link"><FontAwesomeIcon icon={faShoppingBasket}/></Link>
                     <Link to={""} className="nav-link"><FontAwesomeIcon icon={faHome}/></Link>
                 </Nav>
             </Navbar>

@@ -45,14 +45,17 @@ def customers_list(request):
             data = paginator.page(paginator.num_pages)
 
         serializer = CustomUserSerializer(data, context={'request': request}, many=True)
-        if data.has_next():
-            next_page = data.next_page_number()
-        if data.has_previous():
-            previous_page = data.previous_page_number()
+        print(serializer.data)
+        return Response(serializer.data)
 
-        return Response({'data': serializer.data, 'count': paginator.count, 'numpages': paginator.num_pages,
-                         'nextlink': '/api/customers/?page=' + str(next_page),
-                         'prevlink': '/api/customers/?page=' + str(previous_page)})
+        # if data.has_next():
+        #     next_page = data.next_page_number()
+        # if data.has_previous():
+        #     previous_page = data.previous_page_number()
+        #
+        # return Response({'data': serializer.data, 'count': paginator.count, 'numpages': paginator.num_pages,
+        #                  'nextlink': '/api/customers/?page=' + str(next_page),
+        #                  'prevlink': '/api/customers/?page=' + str(previous_page)})
 
     elif request.method == 'POST':
         serializer = CustomUserSerializer(data=request.data)
@@ -71,7 +74,9 @@ def customers_detail(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
+        print("gettt ", pk)
         serializer = CustomUserSerializer(customer, context={'request': request})
+        print(serializer.data)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
