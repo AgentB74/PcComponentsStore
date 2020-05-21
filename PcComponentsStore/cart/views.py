@@ -37,5 +37,7 @@ def cart_detail(request):
 
 @api_view(['GET'])
 def cart_elem_TEST(request):
+    cart = Cart(request)
+    print(cart)
     print("cart_elem_TEST")
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    # return Response(status=status.HTTP_204_NO_CONTENT)

@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 import Slider from "../components/Slider";
 import Header from "../components/Header";
 import Basket from "../components/Basket";
+import NewsBar from "../components/NewsBar";
 // import GameList from "./components/GameList";
 // import CreateGame from "./components/CreateGame";
 // import TicTacToeGame from "./components/TicTacToeGame"
@@ -24,6 +25,7 @@ export default class App extends Component {
             <Router>
                 <Header/>
                 <NavigationBar/>
+                <NewsBar/>
                 <Container>
                     <Row>
                         <Col lg={12} style={marginTop}>

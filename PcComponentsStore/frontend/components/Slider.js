@@ -8,14 +8,15 @@ export default class Slider extends React.Component {
     render() {
 
         const test = {
-            height: "300px",
-            width : "600px",
+            height: "490px",
+            width : "1040px",
         };
         const test2 = {
-            height: "300px",
-            width : "600px",
+            height: "490px",
+            width : "1040px",
             margin: "0 auto",
             marginTop: "35px",
+            // marginLeft: "15%",
         };
 
         // className={"d-block h-50 w-50"}
@@ -66,6 +67,5 @@ export default class Slider extends React.Component {
                 </Carousel.Item>
             </Carousel>
         );
-
     }
 }
