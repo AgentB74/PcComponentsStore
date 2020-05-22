@@ -22,9 +22,9 @@ export default class Welcome extends React.Component {
             marginLeft: "70%",
         };
         return (
-            <Container style={{marginLeft: "12%"}}>
+            <Container style={{marginLeft: "11%"}}>
                 <Slider/>
-                <Col className={"d-flex"} style={{marginTop: "45px", marginLeft: "80px"}} lg={12}>
+                <Col className={"d-flex"} style={{marginTop: "45px", marginLeft: "80px"}} lg={11}>
                     <img style={{marginTop: "35px"}} src={Logo2} width="260"
                          height="250" alt="brand"/>
                     <Jumbotron style={margin} className=" text-white">

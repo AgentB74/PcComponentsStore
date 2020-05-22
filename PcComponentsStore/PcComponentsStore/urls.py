@@ -19,6 +19,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from basic import views
 from users import views as user_views
+from goods import views as goods_views
+
+
 from django.conf.urls import url
 from django.views.generic import RedirectView
 
@@ -33,6 +36,9 @@ urlpatterns = [
     path('orders/', include('orders.urls')),
     path('products/', include('goods.urls')),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/img/favicon.ico'), name='favicon'),
+
+    url(r'^api/products/$', goods_views.api_prod_list),
+    url(r'^api/products/(?P<category_id>[0-9]+)$', goods_views.api_prod_list_by_category),
 
     # path('', HomeView.as_view(), name='home'),
     # path('about/', AboutView.as_view(), name='about'),
