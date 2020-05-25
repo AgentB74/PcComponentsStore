@@ -17,14 +17,15 @@ export default class Basket extends React.Component {
 
     componentDidMount() {
         console.log("componentDidMount()");
-        axios.get("http://127.0.0.1:8000/api/customers/")
+        axios.get("http://127.0.0.1:8000/api/cart/")
             // .then(response => console.log(response.data));
             .then(response => response.data)
             .then((data) => {
-                this.setState({games: data})
-                console.log(data);
-                this.setState({id: data.pk})
-                this.setState({username: data.email})
+                // this.setState({games: data.product})
+                console.log(data.product.id)
+                // console.log(data);
+                // this.setState({id: data.pk})
+                // this.setState({username: data.email})
             });
     }
 
