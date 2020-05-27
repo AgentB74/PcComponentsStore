@@ -22,31 +22,31 @@
 {#{% endif %}#}
 {#</body>#}
 <body>
-{#{% block content %}#}
-{#    {% if user.is_authenticated %}#}
-{#        <h1>Привет, {{ user.username }} ! Это мой магазин!</h1>#}
-{#        <p> {{ user.is_authenticated }} </p>#}
-{#        <a href="{% url 'logout' %}">Выйти</a>#}
-{#    {% else %}#}
-{#        <p>Вы не вошли на сайт</p>#}
-{#        <p> {{ user.is_authenticated }} </p>#}
-{#        <a href="{% url 'login' %}">Войти</a>#}
-{#        <a href="{% url 'signup' %}">Зарегистрироваться</a>#}
-{#    {% endif %}#}
-{#    <h2>Просмотреть все заказы:</h2>#}
-{#    <a href="{% url 'goods:product_list' %}">#}
-{#        <div class="btn btn-info mb-4">Все товары</div>#}
-{#    </a>#}
-    {#  <h2>Поиск заказов покупателя </h2>#}
+{% block content %}
+    {% if user.is_authenticated %}
+        <h1>Привет, {{ user.username }} ! Это мой магазин!</h1>
+        <p> {{ user.is_authenticated }} </p>
+        <a href="{% url 'logout' %}">Выйти</a>
+    {% else %}
+        <p>Вы не вошли на сайт</p>
+        <p> {{ user.is_authenticated }} </p>
+        <a href="{% url 'login' %}">Войти</a>
+        <a href="{% url 'signup' %}">Зарегистрироваться</a>
+    {% endif %}
+    <h2>Просмотреть все заказы:</h2>
+    <a href="{% url 'goods:product_list' %}">
+        <div class="btn btn-info mb-4">Все товары</div>
+    </a>
+      <h2>Поиск заказов покупателя </h2>
     {% comment %}
   <form action="{% url 'search' %}" method="GET">
     {% csrf_token %}
     <input name="q" type="text" placeholder="Введите имя или фамилию...">
   </form>
   {% endcomment %}
-    <div id="root"></div>
-    <script src="/static/js/bundle.js"></script>
+{#    <div id="root"></div>#}
+{#    <script src="/static/js/bundle.js"></script>#}
 
-{#{% endblock content %}#}
+{% endblock content %}
 </body>
 </html>

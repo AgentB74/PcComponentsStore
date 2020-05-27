@@ -1,5 +1,5 @@
 import React from "react";
-import {Navbar, Nav, NavDropdown, Card, Table, Jumbotron, Button} from "react-bootstrap";
+import {Navbar, Nav, NavDropdown, Card, CardDeck, Table, Jumbotron, Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faList, faSignInAlt} from "@fortawesome/free-solid-svg-icons";
 
@@ -37,24 +37,30 @@ export default class ProductList extends React.Component {
 
     generateBoard = () => {
         let BR = [];
+
+
         if (this.state.products.length !== 0) {
-            for (var i = 0; i < this.state.products.length; i++) {
-                BR.push(
-                    <Card className={""}>
-                        {/*<Card.Header><FontAwesomeIcon icon={faList}/>LIST</Card.Header>*/}
-                        {/*<Card.Img variant="top" src={"sas"}/>*/}
-                        <Card.Body>
-                            <Card.Title>{this.state.products[i].name}</Card.Title>
-                            <Card.Text>{this.state.products[i].description}</Card.Text>
-                            <Button variant="primary">Go somewhere</Button>
-                        </Card.Body>
-                    </Card>)
+            for (var i = 0; i < this.state.products.length; i += 4) {
+                let str = []
+                for (var j = i; j < 4; j++) {
+                    str.push(
+                        <Card style={{display: "flex"}} className={"border border-dark bg-dark text-white"}>
+                            {/*<Card.Header><FontAwesomeIcon icon={faList}/>LIST</Card.Header>*/}
+                            <Card.Img variant="top" src={this.state.products[j].image} alt={"img 200x200px"}
+                                      style={img}/>
+                            <Card.Body>
+                                <Card.Title>{this.state.products[j].name}</Card.Title>
+                                <Card.Text>{this.state.products[j].description}</Card.Text>
+                                <Button variant="primary">Go somewhere</Button>
+                            </Card.Body>
+                        </Card>)
+
+                }
+                BR.push(<div className={"sas"}> {str} </div>);
             }
         }
         return BR;
     };
-
-
     // get_prod_by_id = event => {
     //     event.preventDefault();
     //     if (this.state.size < 3) {
@@ -80,27 +86,29 @@ export default class ProductList extends React.Component {
     //         // setTimeout(() => this.props.history.push('/TicTacToeGame'), 1000);
     //     }
     // };
-
-
     render() {
         console.log("render()");
         const img = {
-            heigth: "200px",
+            height: "190px",
             width: "200px",
         }
-
-        return (<Jumbotron className={"d-flex"}>
+        return (
+            <Jumbotron
+                style={{display: "flex", flexWrap: "wrap", marginLeft: "14%", marginTop: "35px", width: "1040px", backgroundColor: "#bababa"}}>
                 {this.state.products.length === 0 ?
                     <h1>>NINE</h1> :
                     this.state.products.map((product) => (
-                        <Card className={"border border-dark bg-dark text-white"}>
+                        <Card style={{width: '14rem', marginRight: "20px", marginBottom: "20px"}} className={"d-flex"}>
                             {/*<Card.Header><FontAwesomeIcon icon={faList}/>LIST</Card.Header>*/}
-                            <Card.Img variant="top" src={product.image} alt={"img 200x200px"} style={img}/>
+                            <Card.Img src={product.image} alt={"img 200x200px"} style={img}/>
                             <Card.Body>
                                 <Card.Title>{product.name}</Card.Title>
-                                <Card.Text>{product.description}</Card.Text>
+                                <Card.Text>{product.price}$</Card.Text>
                                 <Button variant="primary">Добавить в корзину</Button>
                             </Card.Body>
+                            <Card.Footer>
+                                <small className="text-muted">Last updated 3 mins ago</small>
+                            </Card.Footer>
                         </Card>
                     ))
                 }
@@ -108,3 +116,4 @@ export default class ProductList extends React.Component {
         );
     }
 }
+

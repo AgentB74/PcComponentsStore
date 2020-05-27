@@ -30,8 +30,8 @@ export default class Slider extends React.Component {
                         style={test}
                     />
                     <Carousel.Caption>
-                        <h3>First slide label</h3>
-                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                        <h3>Первый слайд!</h3>
+                        <p>Здесь будет размещена новость о поступлении нового товара</p>
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item style={test}>
@@ -46,8 +46,8 @@ export default class Slider extends React.Component {
                         style={test}
                     />
                     <Carousel.Caption>
-                        <h3>Second slide label</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <h3>Второй слайд!</h3>
+                        <p>Здесь будет размещена новость о поступлении нового товара</p>
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item style={test}>
@@ -61,8 +61,8 @@ export default class Slider extends React.Component {
                         style={test}
                     />
                     <Carousel.Caption>
-                        <h3>Third slide label</h3>
-                        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                        <h3>Третий слайд!</h3>
+                        <p>Здесь будет размещена новость о поступлении нового товара</p>
                     </Carousel.Caption>
                 </Carousel.Item>
             </Carousel>

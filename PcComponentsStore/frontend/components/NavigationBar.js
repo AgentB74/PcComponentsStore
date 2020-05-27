@@ -26,12 +26,12 @@ export default class NavigationBar extends React.Component {
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto" style={myFontSize}>
-                        <Link to={"/computers/2/2"} className="nav-link">Компьютеры</Link>
+                        <Link to={"/products/2"} className="nav-link">Компьютеры</Link>
                         <Link to={""} className="nav-link">Периферия</Link>
                         <Link to={""} className="nav-link">Комплектующие</Link>
                         <Link to={""} className="nav-link">Кабели</Link>
-                        <Link to={"/products/2"} className="nav-link">Мониторы</Link>
-                        <Link to={"/products"} className="nav-link">[TEST] Все товары</Link>
+                        <Link to={"/products/1"} className="nav-link">Мониторы</Link>
+                        {/*<Link to={"/products"} className="nav-link">[TEST] Все товары</Link>*/}
                         <NavDropdown title="..." id="basic-nav-dropdown">
                             <NavDropdown.Item href="/">Информация о сайте</NavDropdown.Item>
                             <NavDropdown.Item href="/">Another action</NavDropdown.Item>
