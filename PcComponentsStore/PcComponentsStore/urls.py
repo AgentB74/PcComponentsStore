@@ -43,6 +43,10 @@ urlpatterns = [
     url(r'^api/product/(?P<prod_id>[0-9]+)$', goods_views.api_prod_detail),
 
     url(r'^api/cart/(?P<user_id>[0-9]+)$', cart_views.api_cart),
+    url(r'^api/cart/(?P<user_id>[0-9]+)/(?P<cart_prod_id>[0-9]+)$', cart_views.api_cart_good),
+    url(r'^api/cart/add/(?P<user_id>[0-9]+)$', cart_views.api_cart_add_good),
+
+
     url(r'^api/news/$', news_views.api_news_list),
 
     # path('', HomeView.as_view(), name='home'),

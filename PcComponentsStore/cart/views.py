@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import CartSerializer, CartItemSerializer
+from .serializers import CartSerializer, CartItemSerializer, CartItemSerializer2
 from collections import OrderedDict
 
 
@@ -40,60 +40,77 @@ def cart_detail(request):
     return render(request, 'cart/detail.html', {'cart': cart})
 
 
-@api_view(['GET', 'DELETE', 'PUT'])
+def cart_update(cart):
+    cart.update_total_cost()
+    cart.save()
+
+
+@api_view(['GET', 'DELETE'])
 def api_cart(request, user_id):
     try:
-        carts = Cart.objects.get(user_id=user_id)
+        cart = Cart.objects.get(user_id=user_id)
     except Cart.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    data = []
-    next_page = 1
-    previous_page = 1
-    cart_item = CartItem.objects.filter(cart=carts)
-    ser2 = CartItemSerializer(cart_item, context={'request': request}, many=True)
-    print(ser2.data)
-    # print(carts['items'])
-    # page = request.GET.get('page', 1)
-    # paginator = Paginator(carts, 10)
-    # try:
-    #     data = paginator.page(page)
-    # except PageNotAnInteger:
-    #     data = paginator.page(1)
-    # except EmptyPage:
-    #     data = paginator.page(paginator.num_pages)
-    serializer = CartSerializer(carts, context={'request': request})
-    return Response(serializer.data)
 
-# @api_view(['POST'])
-# def api_cart_add(request, prod_id):
-#     cart = Cart(request)
-#     product = get_object_or_404(Product, id=prod_id)
-#     form = CartAddProductForm(request.POST)
-#     if form.is_valid():
-#         cd = form.cleaned_data
-#         cart.add(product=product, quantity=cd['quantity'], update_quantity=cd['update'])
-#     return Response(status=status.HTTP_204_NO_CONTENT)
+    if request.method == 'GET':
+        # data = []
+        # next_page = 1
+        # previous_page = 1
+        # print(carts['items'])
+        # page = request.GET.get('page', 1)
+        # paginator = Paginator(carts, 10)
+        # try:
+        #     data = paginator.page(page)
+        # except PageNotAnInteger:
+        #     data = paginator.page(1)
+        # except EmptyPage:
+        #     data = paginator.page(paginator.num_pages)
+        serializer = CartSerializer(cart, context={'request': request})
+        return Response(serializer.data)
 
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def customers_detail(request, pk):
-#     try:
-#         customer = CustomUser.objects.get(pk=pk)
-#     except CustomUser.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     if request.method == 'GET':
-#         print("gettt ", pk)
-#         serializer = CustomUserSerializer(customer, context={'request': request})
-#         print(serializer.data)
-#         return Response(serializer.data)
-#
-#     elif request.method == 'PUT':
-#         serializer = CustomUserSerializer(customer, data=request.data, context={'request': request})
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#     elif request.method == 'DELETE':
-#         customer.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+    elif request.method == 'DELETE':
+        cart_item = CartItem.objects.filter(cart=cart)
+        cart_item.delete()
+        cart_update(cart)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET', 'DELETE'])
+def api_cart_good(request, user_id, cart_prod_id):
+    try:
+        cart = Cart.objects.get(user_id=user_id)
+        cart_item = CartItem.objects.filter(cart=cart, id=cart_prod_id)
+    except Cart.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    except CartItem.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = CartItemSerializer(cart_item, context={'request': request}, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'DELETE':
+        cart_item.delete()
+        cart_update(cart)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+def api_cart_add_good(request, user_id):
+    try:
+        cart = Cart.objects.get(user_id=user_id)
+        serializer = CartSerializer(cart, context={'request': request})
+        print(serializer.data)
+        # product = Product.objects.filter(id=prod_id)
+        # serializer2 = ProductSerializer(product, context={'request': request}, many=True)
+        # print(serializer2.data)
+    except Cart.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'POST':
+        serializer = CartItemSerializer2(data=request.data)
+        print(request.data)
+        if serializer.is_valid():
+            serializer.save()
+            cart_update(cart)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)

@@ -11,9 +11,10 @@ export default class Basket extends React.Component {
     }
 
     initialState = {
-        products: [],
-        userId: 0,
+        items: [],
+        userId: 1,
         show: false,
+        cartId: 0,
     };
 
     componentWillMount() {
@@ -22,7 +23,8 @@ export default class Basket extends React.Component {
             // .then(response => console.log(response.data));
             .then(response => response.data)
             .then((data) => {
-                this.setState({products: data.product})
+                this.setState({"items": data.items})
+                this.setState({"cartId": data.id})
             });
     }
 
@@ -47,15 +49,15 @@ export default class Basket extends React.Component {
             .then(response => {
                 if (response.data != null) {
                     this.setState({"show": true});
-                    setTimeout(() => this.setState({"show": false}), 3000);
                     this.setState(() => this.initialState);
+                    setTimeout(() => this.setState({"show": false}), 2000);
                 } else {
                     this.setState({"show": false})
                 }
             })
     };
 
-    createOrder = (userId) => {
+    createOrder = () => {
         axios.post("http://127.0.0.1:8000/api/order/" + this.state.userId)
             .then(response => {
                 if (response.data != null) {
@@ -70,8 +72,8 @@ export default class Basket extends React.Component {
 
     render() {
         return (
-            <Card className={"border border-dark bg-dark text-white"}>
-                <Card.Header><FontAwesomeIcon icon={faList}/>Корзина</Card.Header>
+            <Card style={{marginLeft: "14%", marginTop: "35px",}} className={"border border-dark bg-dark text-white"}>
+                <Card.Header><FontAwesomeIcon icon={faList}/> Корзина</Card.Header>
                 <Card.Body>
                     <Table striped bordered hover variant="dark">
                         <thead>
@@ -86,26 +88,27 @@ export default class Basket extends React.Component {
                         </thead>
                         <tbody>
                         {
-                            this.state.products.length === 0 ?
+                            this.state.items.length === 0 ?
                                 <tr align="center">
                                     < td colSpan={"7"}>Ваша корзина пуста!</td>
                                 </tr> :
-                                this.state.games.map((product) => (
-                                    <tr align="center" key={product.id}>
-                                        <td>{product.pk}</td>
-                                        <td>{product.id}</td>
-                                        <td>{product.email}</td>
-                                        <td>{product.email}</td>
-                                        <td>{product.email}</td>
+                                this.state.items.map((item) => (
+                                    <tr align="center" key={item.id}>
+                                        <td>{item.id}</td>
+                                        {/*<td>{item.id}</td>*/}
+                                        {/*<td>{item.id}</td>*/}
+                                        <td>{item.product.name}</td>
+                                        <td>{item.product.description}</td>
+                                        <td>{item.quantity}</td>
+                                        <td>{item.price * item.quantity}</td>
                                         <td>
                                             <ButtonGroup>
-                                                <Button size={"sm"} variant={"outline-primary"}
-                                                        onClick={this.plusGamer()}>
+                                                <Button size={"sm"} variant={"outline-primary"}>
                                                     <FontAwesomeIcon icon={faSignInAlt}/>
                                                 </Button>
                                                 {' '}
                                                 <Button size={"sm"} variant={"outline-danger"}
-                                                        onClick={this.deleteGood.bind(this, product.pk)}>
+                                                        onClick={this.deleteGood.bind(this, item.id)}>
                                                     <FontAwesomeIcon icon={faTrash}/>
                                                 </Button>
                                             </ButtonGroup>
@@ -116,6 +119,24 @@ export default class Basket extends React.Component {
                         </tbody>
                     </Table>
                 </Card.Body>
+                <Card.Footer>
+                    {
+                        this.state.items.length === 0 ?
+                            <h3></h3>
+                            :
+                            <ButtonGroup>
+                                <Button size={"sm"} variant={"outline-primary"}
+                                        onClick={this.createOrder.bind()}>
+                                    <FontAwesomeIcon icon={faSignInAlt}/> Оформить заказ
+                                </Button>
+                                {' '}
+                                <Button size={"sm"} variant={"outline-danger"}
+                                        onClick={this.deleteAllGoods.bind()}>
+                                    <FontAwesomeIcon icon={faTrash}/> Отчистить корзину
+                                </Button>
+                            </ButtonGroup>
+                    }
+                </Card.Footer>
             </Card>
         );
     }

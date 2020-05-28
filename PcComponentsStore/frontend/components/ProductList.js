@@ -15,11 +15,11 @@ export default class ProductList extends React.Component {
         this.state = {
             products: [],
             id: "",
-            name: ""
+            name: "",
+            userId: 1,
         };
         this.state.id = this.props.match.params.categ_id
         console.log("constructor()");
-
     }
 
     componentWillMount() {
@@ -34,11 +34,27 @@ export default class ProductList extends React.Component {
             });
     }
 
+    inBasket = (goodId) => {
+        axios.post("http://127.0.0.1:8000/api/cart/add/" + this.state.userId, {
+            cart: 2,
+            product: 2,
+            quantity: 1,
+            price: "15.00"
+        })
+            .then(response => {
+                if (response.data != null) {
+                    this.setState({"show": true});
+                    this.setState(() => this.initialState);
+                    setTimeout(() => this.setState({"show": false}), 2000);
+                } else {
+                    this.setState({"show": false})
+                }
+            })
+    };
+
 
     generateBoard = () => {
         let BR = [];
-
-
         if (this.state.products.length !== 0) {
             for (var i = 0; i < this.state.products.length; i += 4) {
                 let str = []
@@ -94,7 +110,14 @@ export default class ProductList extends React.Component {
         }
         return (
             <Jumbotron
-                style={{display: "flex", flexWrap: "wrap", marginLeft: "14%", marginTop: "35px", width: "1040px", backgroundColor: "#bababa"}}>
+                style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    marginLeft: "14%",
+                    marginTop: "35px",
+                    width: "1040px",
+                    backgroundColor: "#bababa"
+                }}>
                 {this.state.products.length === 0 ?
                     <h1>>NINE</h1> :
                     this.state.products.map((product) => (
@@ -104,7 +127,9 @@ export default class ProductList extends React.Component {
                             <Card.Body>
                                 <Card.Title>{product.name}</Card.Title>
                                 <Card.Text>{product.price}$</Card.Text>
-                                <Button variant="primary">Добавить в корзину</Button>
+                                <Button variant="primary" onClick={this.inBasket.bind(this, product.id)}>
+                                    Добавить в корзину
+                                </Button>
                             </Card.Body>
                             <Card.Footer>
                                 <small className="text-muted">Last updated 3 mins ago</small>
