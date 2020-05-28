@@ -40,7 +40,7 @@ def cart_detail(request):
     return render(request, 'cart/detail.html', {'cart': cart})
 
 
-@api_view(['GET'])
+@api_view(['GET', 'DELETE', 'PUT'])
 def api_cart(request, user_id):
     try:
         carts = Cart.objects.get(user_id=user_id)

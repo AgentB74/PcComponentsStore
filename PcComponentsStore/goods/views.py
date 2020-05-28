@@ -30,17 +30,45 @@ def api_prod_list(request):
     return Response(serializer.data)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def api_prod_list_by_category(request, category_id):
     try:
-        print(Category.objects.get(id=category_id))
-        customer = Category.objects.get(id=category_id)
+        # print(Category.objects.get(id=category_id))
+        category = Category.objects.get(id=category_id)
     except Category.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        serializer = CategorySerializer(customer, context={'request': request})
+        # serializer = CategorySerializer(category, context={'request': request})
+        # print(serializer.data)
+        page = request.GET.get('page', 1)
+        products = Product.objects.filter(available=True)
+        print("products == ", products)
+        category = get_object_or_404(Category, id=category_id)
+        print("categ == ", category.id)
+        products = products.filter(category=category.id)
+        print("products == ", products)
+
+        paginator = Paginator(products, 10)
+        try:
+            data = paginator.page(page)
+        except PageNotAnInteger:
+            data = paginator.page(1)
+        except EmptyPage:
+            data = paginator.page(paginator.num_pages)
+
+        serializer = ProductSerializer(data, context={'request': request}, many=True)
         print(serializer.data)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def api_prod_detail(request, prod_id):
+    products = Product.objects.filter(available=True)
+    product = products.filter(id=prod_id)
+
+    serializer = ProductSerializer(product, context={'request': request}, many=True)
+    print(serializer.data)
+    return Response(serializer.data)
 
 
 def product_list(request, category_slug=None):
