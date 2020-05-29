@@ -22,6 +22,7 @@ from users import views as user_views
 from goods import views as goods_views
 from cart import views as cart_views
 from news import views as news_views
+from orders import views as orders_views
 
 from django.conf.urls import url
 from django.views.generic import RedirectView
@@ -46,6 +47,7 @@ urlpatterns = [
     url(r'^api/cart/(?P<user_id>[0-9]+)/(?P<cart_prod_id>[0-9]+)$', cart_views.api_cart_good),
     url(r'^api/cart/add/(?P<user_id>[0-9]+)$', cart_views.api_cart_add_good),
 
+    url(r'^api/order/create/(?P<user_id>[0-9]+)$', orders_views.api_create_order),
 
     url(r'^api/news/$', news_views.api_news_list),
 

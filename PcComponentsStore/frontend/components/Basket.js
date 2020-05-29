@@ -29,18 +29,18 @@ export default class Basket extends React.Component {
     }
 
     deleteGood = (goodId) => {
-        // axios.delete("http://127.0.0.1:8000/api/cart/" + gameId+"/"+goodId)
-        //     .then(response => {
-        //         if (response.data != null) {
-        //             this.setState({"show": true});
-        //             setTimeout(() => this.setState({"show": false}), 3000);
-        //             this.setState({
-        //                 games: this.state.games.filter(game => game.id !== gameId)
-        //             });
-        //         } else {
-        //             this.setState({"show": false})
-        //         }
-        //     })
+        axios.delete("http://127.0.0.1:8000/api/cart/" + this.state.userId + "/" + goodId)
+            .then(response => {
+                if (response.data != null) {
+                    this.setState({"show": true});
+                    setTimeout(() => this.setState({"show": false}), 3000);
+                    this.setState({
+                        "products": this.state.products.filter(product => product.id !== goodId)
+                    });
+                } else {
+                    this.setState({"show": false})
+                }
+            })
         console.log(goodId)
     };
 
@@ -58,7 +58,7 @@ export default class Basket extends React.Component {
     };
 
     createOrder = () => {
-        axios.post("http://127.0.0.1:8000/api/order/" + this.state.userId)
+        axios.post("http://127.0.0.1:8000/api/order/create/" + this.state.userId)
             .then(response => {
                 if (response.data != null) {
                     this.setState(() => this.initialState);
@@ -122,7 +122,10 @@ export default class Basket extends React.Component {
                 <Card.Footer>
                     {
                         this.state.items.length === 0 ?
-                            <h3></h3>
+                            <Button size={"sm"} variant={"outline-danger"}
+                                    onClick={this.createOrder.bind(this, 1)}>
+                                <FontAwesomeIcon icon={faTrash}/>
+                            </Button>
                             :
                             <ButtonGroup>
                                 <Button size={"sm"} variant={"outline-primary"}
