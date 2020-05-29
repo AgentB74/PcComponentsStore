@@ -5,9 +5,6 @@ from users.models import CustomUser
 
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, related_name='order', on_delete=models.CASCADE)
-    # first_name = models.CharField(max_length=50)
-    # last_name = models.CharField(max_length=50)
-    # email = models.EmailField()
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
