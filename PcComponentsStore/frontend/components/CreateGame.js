@@ -6,7 +6,7 @@ import {faSave, faUndo} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 // import MyToast from "./MyToast";
 
-export default class Registration extends React.Component {
+export default class RegistrationS extends React.Component {
     constructor(props) {
         super(props);
         this.state = this.initialState;
@@ -75,7 +75,7 @@ export default class Registration extends React.Component {
                 </div>
                 <Card className={"border border-dark bg-dark text-white"}>
                     <Card.Header><h2>Registration</h2></Card.Header>
-                    <Form onReset={this.resetGame} onSubmit={this.submitGame} id={"RegistrationFormId"}>
+                    <Form onReset={this.resetGame()} onSubmit={this.submitGame} id={"RegistrationFormId"}>
                         <Card.Body>
                             <Form.Row>
                                 <Form.Group as={Col} controlId="formBasicLogin">

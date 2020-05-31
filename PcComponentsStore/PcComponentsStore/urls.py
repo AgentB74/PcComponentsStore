@@ -34,6 +34,7 @@ urlpatterns = [
     path('users/', include('django.contrib.auth.urls')),
     url(r'^api/customers/$', user_views.customers_list),
     url(r'^api/customers/(?P<pk>[0-9]+)$', user_views.customers_detail),
+    # url(r'^api/customers/authorize/$', user_views.customer),
     path('cart/', include('cart.urls')),
     path('orders/', include('orders.urls')),
     path('products/', include('goods.urls')),

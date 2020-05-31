@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import CustomUser
 from .serializers import *
 from django.conf import settings
+from cart.models import Cart
 
 
 class SignUpView(CreateView):
@@ -58,11 +59,26 @@ def customers_list(request):
         #                  'prevlink': '/api/customers/?page=' + str(previous_page)})
 
     elif request.method == 'POST':
-        serializer = CustomUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        t1 = request.data[0].get('username')
+        t2 = request.data[0].get('password')
+        t3 = request.data[0].get('firstName')
+        t4 = request.data[0].get('lastName')
+        t5 = request.data[0].get('email')
+        t6 = request.data[0].get('telephoneNumb')
+        customer = CustomUser.create(t1, t2, t3, t4, t5, t6)
+        customer.save()
+        print(customer.id)
+
+        serializer = CustomUserSerializer(data=customer)
+        print(serializer.initial_data)
+        cart = Cart.create(customer)
+        # if serializer.is_valid():
+        #     print(serializer.data)
+        #     serializer.save()
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        cart.save()
+        return Response(serializer.initial_data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])

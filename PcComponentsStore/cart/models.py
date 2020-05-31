@@ -7,7 +7,7 @@ from users.models import CustomUser
 # Create your models here.
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, related_name='cart', on_delete=models.CASCADE)
-    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     is_empty = models.BooleanField(default=True)
 
     def __str__(self):
@@ -18,6 +18,11 @@ class Cart(models.Model):
 
     def update_total_cost(self):
         self.total_cost = sum(item.get_cost() for item in self.items.all())
+
+    @classmethod
+    def create(cls, user):
+        cart = cls(user=user)
+        return cart
 
 
 class CartItem(models.Model):

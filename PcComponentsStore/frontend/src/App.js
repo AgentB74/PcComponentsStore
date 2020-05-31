@@ -10,6 +10,8 @@ import Header from "../components/Header";
 import Basket from "../components/Basket";
 import NewsBar from "../components/NewsBar";
 import ProductList from "../components/ProductList";
+import Registration from "../components/Registration";
+import axios from "axios";
 // import GameList from "./components/GameList";
 // import CreateGame from "./components/CreateGame";
 // import TicTacToeGame from "./components/TicTacToeGame"
@@ -36,6 +38,7 @@ export default class App extends Component {
                                 {/*<Route path="/games" exact component={GameList}/>*/}
                                 {/*<Route path="/TicTacToeGame" exact component={TicTacToeGame}/>*/}
                                 <Route path="/basket" exact component={Basket}/>
+                                <Route path="/registration" exact component={Registration}/>
                                 <Route path="/products/:categ_id" component={ProductList}/>
                             </Switch>
                         </Col>

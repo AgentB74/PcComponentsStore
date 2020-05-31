@@ -25,29 +25,26 @@ export default class ProductList extends React.Component {
     componentWillMount() {
         console.log("componentDidMount()");
         axios.get("http://127.0.0.1:8000/api/products/" + this.state.id)
-            // .then(response => console.log(response.data));
             .then(response => response.data)
             .then((data) => {
                 this.setState({products: data})
-                // this.setState({id: data.id})
-                // this.setState({username: data.name})
             });
     }
 
     inBasket = (goodId) => {
         axios.post("http://127.0.0.1:8000/api/cart/add/" + this.state.userId, {
-            cart: 2,
-            product: 2,
+            cart: this.state.userId,
+            product: goodId,
             quantity: 1,
             price: "15.00"
         })
             .then(response => {
                 if (response.data != null) {
-                    this.setState({"show": true});
+                    // this.setState({"show": true});
                     this.setState(() => this.initialState);
-                    setTimeout(() => this.setState({"show": false}), 2000);
+                    // setTimeout(() => this.setState({"show": false}), 2000);
                 } else {
-                    this.setState({"show": false})
+                    // this.setState({"show": false})
                 }
             })
     };
