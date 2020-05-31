@@ -39,6 +39,7 @@ export default class App extends Component {
                                 {/*<Route path="/TicTacToeGame" exact component={TicTacToeGame}/>*/}
                                 <Route path="/basket" exact component={Basket}/>
                                 <Route path="/registration" exact component={Registration}/>
+                                <Route path="/product/:id" exact component={Welcome}/>
                                 <Route path="/products/:categ_id" component={ProductList}/>
                             </Switch>
                         </Col>
