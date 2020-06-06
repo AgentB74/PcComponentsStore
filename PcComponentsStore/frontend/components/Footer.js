@@ -9,7 +9,7 @@ export default class Footer extends React.Component {
         let fullYear = new Date().getFullYear();
 // sticky="bottom"
         return (
-            <Navbar fixed="bottom" bg="primary" variant="dark">
+            <Navbar fixed="bottom" variant="dark" style={{backgroundColor: "#2eabef"}}>
                 <Container>
                     <Col lg={12} className="text-white text-center">
                         <div>

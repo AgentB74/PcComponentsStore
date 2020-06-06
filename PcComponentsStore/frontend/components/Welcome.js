@@ -11,6 +11,7 @@ export default class Welcome extends React.Component {
             // marginTop: "35px",
             // paddingTop: "40px",
             // paddingBottom: "40px",
+            marginBottom: "100px",
             marginLeft: "15%",
             backgroundColor: '#46a5f2',
             width: "500px"
@@ -28,7 +29,7 @@ export default class Welcome extends React.Component {
                     <img style={{marginTop: "35px"}} src={Logo2} width="260"
                          height="250" alt="brand"/>
                     <Jumbotron style={margin} className=" text-white">
-                        <h1>Hello, User!</h1>
+                        <h1>Добро пожаловать!</h1>
                         <p>
                             Добро пожаловать в магазин компьютерных комплектующих!{"\n"}
                             Этот сайт был создан для более удобного выбора частей ПК!

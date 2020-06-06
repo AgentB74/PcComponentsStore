@@ -16,6 +16,7 @@ export default class Header extends React.Component {
             height: "100px",
             textAlign: "center",
             fontSize: "30px",
+            backgroundColor: "#2eabef"
         }
         return (
             <Navbar className="d-flex" fixed="top" style={color}>

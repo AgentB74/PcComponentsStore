@@ -27,21 +27,21 @@ export default class Registration extends React.Component {
 
     submitAccount = event => {
         event.preventDefault();
-        axios.post("http://127.0.0.1:8000/api/customers/",
-            [{
+        axios.post("http://127.0.0.1:8000/api/auth/register/",
+            {
                 username: this.state.username,
                 password: this.state.password,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
                 email: this.state.email,
-                telephoneNumb: this.state.telephoneNumb
-            }])
+                telephone_numb: this.state.telephoneNumb
+            })
             .then(response => response.data)
-        this.props.history.push('/')
-        // .then((data) => {
-        //     this.setState(() => this.initialState);
-        //     this.props.history.push('/')
-        // });
+            .then((data) => {
+                console.log(data)
+                this.setState(() => this.initialState);
+                this.props.history.push('/')
+            });
     }
 
     accountChange = event => {

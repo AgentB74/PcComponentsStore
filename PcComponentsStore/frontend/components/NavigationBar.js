@@ -1,10 +1,13 @@
 import React from "react";
-import {Navbar, Nav, NavDropdown, Modal, Button, Form, Card} from "react-bootstrap";
+import {Navbar, Nav, NavDropdown, Modal, Button, Form, Card, DropdownButton} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSignInAlt} from "@fortawesome/free-solid-svg-icons";
+import {faSignInAlt, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
 
 import {Link} from "react-router-dom";
 import Col from "react-bootstrap/Col";
+import PropTypes from 'prop-types';
+import axios from "axios";
+
 
 export default class NavigationBar extends React.Component {
     constructor(props) {
@@ -13,7 +16,7 @@ export default class NavigationBar extends React.Component {
     }
 
     initialState = {
-        show: false, login: '', password: ''
+        show: false, login: '', password: '', id: 0
     }
 
     resetAccount = () => {
@@ -26,24 +29,36 @@ export default class NavigationBar extends React.Component {
 
     submitAccount = event => {
         event.preventDefault();
+
     }
 
     accountChange = event => {
         this.setState({[event.target.name]: event.target.value});
     }
 
+    test = event => {
+        event.preventDefault();
+        axios.get("http://127.0.0.1:8000/api/users/", {
+            headers: {
+                Authorization: `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNTk2NTI0Mjg0fQ.Cn_BTXKpUF9TGJRo9CXDy9RxtQJXxcnkxKKYaMzLn_E`
+            }
+        })
+    }
+
     render() {
         const {show, login, password} = this.state;
 
         const myFontSize = {
-            fontSize: "20px"
+            fontSize: "20px",
         }
         const myFontSize2 = {
-            fontSize: "22px"
+            fontSize: "20px",
             // marginLeft: "45%"
+            // position: "absolute",
         }
         const myMargin = {
-            marginTop: "145px",
+            marginTop: "155px",
+            backgroundColor: "#2eabef",
         }
 
         const fromStyle = {
@@ -52,7 +67,7 @@ export default class NavigationBar extends React.Component {
 
         return (
             <>
-                <Navbar bg="primary" variant="dark" style={myMargin}>
+                <Navbar variant="dark" style={myMargin}>
                     {/*<Link to={""} className="navbar-brand">*/}
                     {/*    /!*<img src="https://image.flaticon.com/icons/svg/566/566294.svg" width="45"*!/*/}
                     {/*    /!*     height="45" alt="brand"/>*!/*/}
@@ -60,31 +75,74 @@ export default class NavigationBar extends React.Component {
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto" style={myFontSize}>
-                            <Link to={"/products/2"} className="nav-link">Компьютеры</Link>
-                            <NavDropdown title="Периферия" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="/">Информация о сайте</NavDropdown.Item>
-                                <NavDropdown.Item href="/">Another action</NavDropdown.Item>
-                                <NavDropdown.Item href="/">Something</NavDropdown.Item>
-                                <NavDropdown.Divider/>
-                                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                            </NavDropdown>
-                            <Link to={""} className="nav-link">Комплектующие</Link>
-                            <Link to={""} className="nav-link">Кабели</Link>
-                            <Link to={"/products/1"} className="nav-link">Мониторы</Link>
-                            {/*<Link to={"/products"} className="nav-link">[TEST] Все товары</Link>*/}
-                            <NavDropdown title="..." id="basic-nav-dropdown">
-                                <NavDropdown.Item href="/">Информация о сайте</NavDropdown.Item>
-                                <NavDropdown.Item href="/">Another action</NavDropdown.Item>
-                                <NavDropdown.Item href="/">Something</NavDropdown.Item>
-                                <NavDropdown.Divider/>
-                                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                            </NavDropdown>
+                            {/*<Link to={"/products/2"} className="nav-link">Компьютеры</Link>*/}
+                            <a className={"nav-link"} href="/products/2"><p style={{
+                                margin: "0 auto",
+                                marginTop: "8px",
+                            }}>Компьютеры</p></a>
+                            <a className={"nav-link"} style={myFontSize}>
+                                <NavDropdown title="Периферия" size="lg" id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="/products/12">Клавиатуры</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/13">Компьюетрные мыши</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/14">Наушники</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/15">Веб-камеры</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/16">Акустические системы</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/17">Микрофоны</NavDropdown.Item>
+                                    {/*<NavDropdown.Divider/>*/}
+                                    {/*<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
+                                </NavDropdown>
+                            </a>
+                            <a className={"nav-link"} style={myFontSize}>
+                                <NavDropdown title="Комплектующие" id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="/products/12">Процессор</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/13">Материнская плата</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/14">Видеокарта</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/15">Блок питания</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/16">Модули памяти</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/17">Звуковая карта</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/17">Кулеры и системы охлаждения</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/17">Жесткий диск</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/17">Корпуса</NavDropdown.Item>
+                                    {/*<NavDropdown.Divider/>*/}
+                                    {/*<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
+                                </NavDropdown>
+                            </a>
+                            <a className={"nav-link"} style={myFontSize}>
+                                <NavDropdown title="Кабели" id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="/products/12">Кабели FireWire</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/13">Кабели USB</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/14">Кабели VGA</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/15">Кабели аудио-видео</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/16">Кабели силовые</NavDropdown.Item>
+                                    {/*<NavDropdown.Divider/>*/}
+                                    {/*<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
+                                </NavDropdown>
+                            </a>
+                            <a href="/products/1" className="nav-link" style={myFontSize2}><p style={{
+                                margin: "0 auto",
+                                marginTop: "8px",
+                            }}>Мониторы</p></a>
+                            <a className={"nav-link"} style={myFontSize}>
+                                <NavDropdown title="..." id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="/">Информация о сайте</NavDropdown.Item>
+                                    <NavDropdown.Item href="/">Контакты</NavDropdown.Item>
+                                    <NavDropdown.Item href="/">...</NavDropdown.Item>
+                                    <NavDropdown.Divider/>
+                                    <NavDropdown.Item href="/">...</NavDropdown.Item>
+                                </NavDropdown>
+                            </a>
                         </Nav>
-                        <Nav style={myFontSize2}>
+                        <Nav style={myFontSize}>
+                            {this.state.id !== 0 ?
+                                <Link onClick={this.switchState.bind(this, true)} className="nav-link">
+                                    <FontAwesomeIcon style={{fontSize: "22px"}} icon={faSignOutAlt}/>
+                                </Link> :
+                                <Link onClick={this.switchState.bind(this, true)} className="nav-link">
+                                    <FontAwesomeIcon style={{fontSize: "22px"}} icon={faSignInAlt}/>
+                                </Link>
+                            }
                             {/*<Link to={"/basket"} className="nav-link"><FontAwesomeIcon icon={faShoppingBasket}/></Link>*/}
-                            <Link onClick={this.switchState.bind(this, true)} className="nav-link"><FontAwesomeIcon
-                                style={{fontSize: "22px"}}
-                                icon={faSignInAlt}/></Link>
+
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
@@ -92,7 +150,10 @@ export default class NavigationBar extends React.Component {
                        onHide={this.switchState.bind(this, false)}
                        centered
                        size={"sm"}>
-                    <Form onReset={this.resetAccount.bind()} onSubmit={this.submitAccount} id={"RegistrationFormId"}>
+                    <Form onReset={this.resetAccount.bind()}
+                        // onSubmit={this.submitAccount}
+                          onSubmit={e => this.props.name(e, this.state)}
+                          id={"RegistrationFormId"}>
                         <Modal.Header closeButton>
                             <Modal.Title>Авторизация</Modal.Title>
                         </Modal.Header>
@@ -135,6 +196,9 @@ export default class NavigationBar extends React.Component {
                             <Button variant="primary" type="submit">
                                 Войти
                             </Button>
+                            <Button onClick={this.test.bind(this)}>
+                                test
+                            </Button>
                         </Modal.Footer>
                     </Form>
                 </Modal>
@@ -142,4 +206,7 @@ export default class NavigationBar extends React.Component {
         );
     }
 }
+// NavigationBar.propTypes = {
+//     handle_signup: PropTypes.func.isRequired
+// };
 
