@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from basic import views
-from users import views as user_views
+from users import views as user_views, endpoints
 from goods import views as goods_views
 from cart import views as cart_views
 from news import views as news_views
@@ -32,6 +32,11 @@ urlpatterns = [
     path('', views.homeView),
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
+
+    # url(r'^api/users/$', user_views.current_user),
+    url(r'^api/', include(endpoints)),
+    url(r'^api/auth/', include('knox.urls')),
+
     url(r'^api/customers/$', user_views.customers_list),
     url(r'^api/customers/(?P<pk>[0-9]+)$', user_views.customers_detail),
     # url(r'^api/customers/authorize/$', user_views.customer),
@@ -46,6 +51,7 @@ urlpatterns = [
 
     url(r'^api/cart/(?P<user_id>[0-9]+)$', cart_views.api_cart),
     url(r'^api/cart/(?P<user_id>[0-9]+)/(?P<cart_prod_id>[0-9]+)$', cart_views.api_cart_good),
+    url(r'^api/cart/(?P<user_id>[0-9]+)/(?P<cart_prod_id>[0-9]+)/(?P<prod_qu>[0-9]+)$', cart_views.api_cart_good_change),
     url(r'^api/cart/add/(?P<user_id>[0-9]+)$', cart_views.api_cart_add_good),
 
     url(r'^api/order/create/(?P<user_id>[0-9]+)$', orders_views.api_create_order),
