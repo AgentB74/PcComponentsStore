@@ -55,6 +55,7 @@ def create_order(cart, cart_item):
     for item in cart_item:
         create_order_item(item, order)
 
+    create_order_status(order)
     cart_item.delete()
     cart_update(cart)
 
@@ -75,11 +76,3 @@ def api_create_order(request, user_id):
         create_order(cart, cart_item)
         return Response(status=status.HTTP_201_CREATED)
 
-        # create_order(cart, cart_item)
-        # serializer = CartItemSerializer2(data=request.data)
-        # print(request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     cart_update(cart)
-        #     return Response(status=status.HTTP_201_CREATED)
-        # return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
