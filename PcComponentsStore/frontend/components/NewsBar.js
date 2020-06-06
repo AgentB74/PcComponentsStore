@@ -12,7 +12,7 @@ export default class NewsBar extends React.Component {
     }
 
     componentWillMount() {
-        console.log("componentDidMount()");
+        // console.log("componentWillMount()");
         axios.get("http://127.0.0.1:8000/api/news/")
             .then(response => response.data)
             .then((data) => {
@@ -42,9 +42,10 @@ export default class NewsBar extends React.Component {
                                     </Card.Body>
                                     <Card.Footer>
                                         <Link to={{pathname: `/product/${newOne.product.id}`}}>
-                                            <Button variant="primary">
-                                                Перейти к товару
-                                            </Button>
+                                        {/*    <Button href={"/product/"`${newOne.product.id}`} variant="primary">*/}
+                                        <Button variant="primary">
+                                            Перейти к товару
+                                        </Button>
                                         </Link>
                                     </Card.Footer>
                                 </Card>
