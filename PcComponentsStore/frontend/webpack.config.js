@@ -7,6 +7,7 @@ module.exports = {
     entry: path.join(__dirname, 'src', 'index.js'),
     output: {
         path: path.join(__dirname, 'dist', 'js'),
+        publicPath: '/',
         filename: "bundle.js"
     },
     devServer: {
@@ -21,6 +22,7 @@ module.exports = {
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
             "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
         },
+        historyApiFallback: true,
         stats: "errors-only",
         clientLogLevel: "error",
     },
