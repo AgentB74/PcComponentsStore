@@ -1,5 +1,5 @@
 import React from "react";
-import {Navbar, Nav, NavDropdown, Modal, Button, Form, Card} from "react-bootstrap";
+import {Navbar, Nav, NavDropdown, Modal, Button, Form, Card, Toast} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSave, faSignInAlt, faUndo} from "@fortawesome/free-solid-svg-icons";
 
@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 
 import NavigationBar from "./NavigationBar";
 import axios from "axios";
+import MyToast from "./MyToast";
 
 export default class Registration extends React.Component {
     constructor(props) {
@@ -17,7 +18,8 @@ export default class Registration extends React.Component {
 
     initialState = {
         username: '', password: '', firstName: '',
-        lastName: '', email: '', telephoneNumb: ''
+        lastName: '', email: '', telephoneNumb: '',
+        ToastShow: false, ToastType: "", ToastMessage: ""
     }
 
 
@@ -35,13 +37,22 @@ export default class Registration extends React.Component {
                 last_name: this.state.lastName,
                 email: this.state.email,
                 telephone_numb: this.state.telephoneNumb
-            })
-            .then(response => response.data)
-            .then((data) => {
-                console.log(data)
-                this.setState(() => this.initialState);
+            }).then(response => {
+            if (response.data != null) {
+                this.setState({"ToastShow": true});
+                this.setState({"ToastType": "success!"});
+                this.setState({"ToastMessage": "Аккаунт создан успешно!"});
+                setTimeout(() => this.setState({"ToastShow": false}), 1500);
                 this.props.history.push('/')
-            });
+            } else {
+                this.setState({"ToastShow": true});
+                this.setState({"ToastType": "danger"});
+                this.setState({"ToastMessage": "Ошибка при создании аккаунта!"});
+                setTimeout(() => this.setState({"ToastShow": false}), 1500);
+            }
+        });
+        // this.setState(this.initialState);
+        // setTimeout(() => this.props.history.push('/TicTacToeGame'), 1000);
     }
 
     accountChange = event => {
@@ -62,6 +73,12 @@ export default class Registration extends React.Component {
 
         return (
             <div>
+                <div style={{"display": this.state.ToastShow ? "block" : "none"}}>
+                    <MyToast children={{
+                        show: this.state.ToastShow, message: this.state.ToastMessage,
+                        type: this.state.ToastType
+                    }}/>
+                </div>
                 <Card style={MyStyle}>
                     <Card.Header><h2>Регистрация</h2></Card.Header>
                     <Form onReset={this.resetAccount.bind()} onSubmit={this.submitAccount} id={"RegistrationFormId"}>

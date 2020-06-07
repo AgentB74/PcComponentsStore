@@ -9,7 +9,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 export default class Header extends React.Component {
     render() {
         const color = {
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            zIndex: 1,
         };
         const buttonStyle = {
             width: "200px",
