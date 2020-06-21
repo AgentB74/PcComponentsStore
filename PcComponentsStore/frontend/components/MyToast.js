@@ -13,14 +13,17 @@ export default class MyToast extends Component {
         };
 
         return (
-            <div style={this.props.children.show ? toastCss: null}>
+            <div style={this.props.children.show ? toastCss : null}>
                 <Toast
                     className={`boarder text-white ${this.props.children.type === "success" ? "border-success bg-success" : "border-danger bg-danger"}`}
                     show={this.props.children.show}>
                     <Toast.Header
                         className={`text-white ${this.props.children.type === "success" ? "bg-success" : "bg-danger"}`}
                         closeButton={false}>
-                        <strong className={"mr-auto"}>Успешно!</strong>
+                        {this.props.children.type === "success" ?
+                            <strong className={"mr-auto"}>Успешно!</strong>
+                            : <strong className={"mr-auto"}>Ошибка!</strong>
+                        }
                     </Toast.Header>
                     <Toast.Body>
                         {this.props.children.message}

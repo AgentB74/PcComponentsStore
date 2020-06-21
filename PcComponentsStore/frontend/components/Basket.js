@@ -1,10 +1,17 @@
 import React from "react";
-import {Card, Button, Table, ButtonGroup, Form, Modal} from "react-bootstrap";
+import {Card, Button, Table, ButtonGroup, Form, Modal, Nav} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSave, faUndo, faList, faTrash, faSignInAlt, faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
+import {
+    faTrash,
+    faSignInAlt,
+    faPlus,
+    faMinus,
+    faLongArrowAltLeft, faCross, faTimes
+} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import Col from "react-bootstrap/Col";
+import ListGroup from "react-bootstrap/ListGroup";
 
 export default class Basket extends React.Component {
     constructor(props) {
@@ -18,6 +25,7 @@ export default class Basket extends React.Component {
         show: false,
         cartId: 0,
         quantity: 0,
+        sumQuantity: 0,
         totalPrice: 0,
         myShow: false,
         orderId: 0,
@@ -25,14 +33,25 @@ export default class Basket extends React.Component {
 
     componentWillMount() {
         console.log("componentDidMount()");
-        axios.get("http://127.0.0.1:8000/api/cart/" + this.state.userId)
-            // .then(response => console.log(response.data));
-            .then(response => response.data)
-            .then((data) => {
-                this.setState({"items": data.items})
-                this.setState({"cartId": data.id})
-                this.setState({"totalPrice": data.total_cost})
-            });
+        this.state.userId = localStorage.getItem('id')
+        if (this.state.userId !== 0) {
+            axios.get("http://127.0.0.1:8000/api/cart/" + this.state.userId)
+                // .then(response => console.log(response.data));
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({"items": data.items})
+                    this.setState({"cartId": data.id})
+                    this.setState({"totalPrice": data.total_cost})
+                    let temp3 = 0
+                    let temp2 = this.state.sumQuantity
+                    this.state.items.map(function (item) {
+                        temp3 = item.quantity + temp2
+                        temp2 = temp3
+                    })
+                    console.log(temp3)
+                    this.setState({"sumQuantity": temp3})
+                });
+        }
     }
 
     ordSubmit = event => {
@@ -70,9 +89,17 @@ export default class Basket extends React.Component {
                 this.setState({"items": data.items})
                 this.setState({"cartId": data.id})
                 this.setState({"totalPrice": data.total_cost})
+                this.setState({"sumQuantity": 0})
+                let temp3 = 0
+                let temp2 = this.state.sumQuantity
+                this.state.items.map(function (item) {
+                    temp3 = item.quantity + temp2
+                    temp2 = temp3
+                })
+                console.log(temp3)
+                this.setState({"sumQuantity": temp3})
             });
     }
-
 
     changeQuantity = (itemId) => {
         console.log(this.state.quantity)
@@ -101,6 +128,7 @@ export default class Basket extends React.Component {
                     this.setState({
                         "items": this.state.items.filter(item => item.id !== goodId)
                     });
+                    this.reloadCart()
                 } else {
                     this.setState({"show": false})
                 }
@@ -123,14 +151,20 @@ export default class Basket extends React.Component {
 
     createOrder = () => {
         axios.post("http://127.0.0.1:8000/api/order/create/" + this.state.userId)
-            .then(response => {
-                if (response.data != null) {
-                    this.setState(() => this.initialState);
-                    this.setState({"myShow": true});
-                } else {
-                    this.setState({"myShow": false})
-                }
-            })
+            // .then(response => {
+            //     if (response.data != null) {
+            //
+            //         this.setState({"myShow": true});
+            //     } else {
+            //         this.setState({"myShow": false})
+            //     }
+            // })
+            .then(response => response.data)
+            .then((data) => {
+                this.setState({"orderId": data})
+                this.setState({"myShow": true})
+                this.reloadCart()
+            });
 
     };
 
@@ -139,148 +173,273 @@ export default class Basket extends React.Component {
     }
 
     goHome = () => {
+        this.setState(() => this.initialState);
         this.props.history.push('/')
     };
 
-
     render() {
+        const hstyle = {
+            marginLeft: "15%",
+            marginTop: "1%",
+            // backgroundColor: "#ecebeb",
+        }
+
         return (
-            <>
-                <Card style={{marginLeft: "14%", marginTop: "35px", marginBottom: "35px"}}
-                      className={"border border-light bg-light text-dark"}>
-                    <Card.Header><FontAwesomeIcon icon={faList}/> Корзина</Card.Header>
-                    <Card.Body>
-                        <Table striped bordered hover variant="light">
-                            <thead>
-                            <tr>
-                                <th>№</th>
-                                <th>Название</th>
-                                <th>Описание</th>
-                                <th>Количество товара</th>
-                                <th>Цена</th>
-                                <th>Действия</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
+            <div>
+                {localStorage.getItem('id') === '0' ?
+                    <div style={hstyle}>
+                        <h1>Для входа, пожалуйста, авторизируйтесь</h1>
+                    </div> :
+                    <div style={{marginBottom: "10%"}}>
+                        <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginLeft: "14%",
+                            marginTop: "1%",
+                            width: "90%"
+                        }}>
+                            <div><h1>Ваш заказ</h1></div>
+                            <div style={{marginLeft: "auto"}}>
+                                <a href="/products/1">
+                                    <Button variant="outline-primary" style={{
+                                        width: "200px",
+                                        height: "65px",
+                                        fontSize: "25px",
+                                        borderRadius: "12px",
+                                    }}>
+                                        <div style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            verticalAlign: "center",
+                                            // position: "absolute"
+                                        }}>
+                                            <FontAwesomeIcon icon={faLongArrowAltLeft} style={{
+                                                marginRight: "5%",
+                                                background: "",
+                                                fontSize: "30px",
+                                            }}/>
+                                            <div><p style={{marginBottom: "0"}}>В магазин</p></div>
+                                        </div>
+                                    </Button>
+                                </a>
+                            </div>
+                        </div>
+                        <Card style={{
+                            width: "90%",
+                            marginLeft: "14%",
+                            marginTop: "35px",
+                            marginBottom: "2%",
+                        }}>
+                            <div>
+                                {
+                                    this.state.items.length === 0 ?
+                                        <div style={{textAlign: "center", margin: "10% 1px 10% 1px"}}><h1>Корзина
+                                            пуста</h1></div>
+                                        :
+                                        <Card.Body>
+                                            <Table bordered striped hover variant="light"
+                                                   style={{
+                                                       fontSize: "20px",
+                                                       textAlign: "center",
+                                                       background: "#ffffff"
+                                                   }}>
+                                                <thead>
+                                                <tr>
+                                                    <th style={{border: "1px solid #ecebeb"}}></th>
+                                                    <th style={{border: "1px solid #ecebeb"}}>Название</th>
+                                                    {/*<th>Описание</th>*/}
+                                                    <th style={{border: "1px solid #ecebeb"}}>Количество</th>
+                                                    <th style={{border: "1px solid #ecebeb"}}>Цена</th>
+                                                    <th style={{border: "1px solid #ecebeb"}}></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {
+                                                    this.state.items.map((item) => (
+                                                        <tr align="center" key={item.id}>
+                                                            <td class="align-middle"
+                                                                style={{border: "1px solid #ecebeb"}}>
+                                                                <img style={{width: "140px", height: "100px"}}
+                                                                     src={item.product.image} alt="product"/></td>
+                                                            <td class="align-middle"
+                                                                style={{border: "1px solid #ecebeb"}}>{item.product.name}</td>
+                                                            {/*<td>{item.product.description}</td>*/}
+                                                            <td style={{
+                                                                verticalAlign: "middle",
+                                                                border: "1px solid #ecebeb"
+                                                            }}>
+                                                                <div style={{
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "center"
+                                                                }}>
+                                                                    <Button style={{
+                                                                        width: "45px",
+                                                                        height: "45px",
+                                                                        fontSize: "22px"
+                                                                    }}
+                                                                            onClick={this.minusQuantity.bind(this, item.quantity, item.id)}>
+                                                                        <FontAwesomeIcon icon={faMinus}/>
+                                                                    </Button>
+                                                                    <div style={{marginBottom: "-17px"}}>
+                                                                        <Form style={{width: "45px"}}>
+                                                                            <Form.Group>
+                                                                                <Form.Control
+                                                                                    required autoComplete="off"
+                                                                                    type="text"
+                                                                                    name={"quantity"}
+                                                                                    value={item.quantity}
+                                                                                    onChange={this.accountChange}
+                                                                                    className={"bg-light text-dark"}
+                                                                                    style={{
+                                                                                        fontSize: "21px",
+                                                                                        textAlign: "center"
+                                                                                    }}
+                                                                                />
+                                                                            </Form.Group>
+                                                                        </Form>
+                                                                    </div>
+                                                                    <Button
+                                                                        style={{
+                                                                            width: "45px",
+                                                                            height: "45px",
+                                                                            fontSize: "22px"
+                                                                        }}
+                                                                        onClick={this.plusQuantity.bind(this, item.quantity, item.id)}>
+                                                                        <FontAwesomeIcon icon={faPlus}/>
+                                                                    </Button>
+                                                                </div>
+                                                            </td>
+                                                            <td class="align-middle"
+                                                                style={{border: "1px solid #ecebeb"}}>{item.price} руб.</td>
+                                                            <td class="align-middle"
+                                                                style={{border: "1px solid #ecebeb"}}>
+                                                                <a onClick={this.deleteGood.bind(this, item.id)}
+                                                                   style={{color: "#858585", fontSize: "28px"}}>
+                                                                    <FontAwesomeIcon icon={faTimes}/>
+                                                                </a>
+                                                                {/*<ButtonGroup>*/}
+                                                                {/*    <Button size={"lg"} variant={"outline-danger"}*/}
+                                                                {/*            onClick={this.deleteGood.bind(this, item.id)}>*/}
+                                                                {/*        <FontAwesomeIcon icon={faTrash}/>*/}
+                                                                {/*    </Button>*/}
+                                                                {/*</ButtonGroup>*/}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </Table>
+                                            <h3>Всего товаров: {this.state.sumQuantity} шт.</h3>
+                                            <h3>Итоговая сумма: {this.state.totalPrice} руб.</h3>
+                                        </Card.Body>
+                                }
+                            </div>
+                            <Card.Footer>{
                                 this.state.items.length === 0 ?
-                                    <tr align="center">
-                                        < td colSpan={"7"}>Ваша корзина пуста!</td>
-                                    </tr> :
-                                    this.state.items.map((item) => (
-                                        <tr align="center" key={item.id}>
-                                            <td>{item.id}</td>
-                                            <td>{item.product.name}</td>
-                                            <td>{item.product.description}</td>
-                                            <td>
-                                                <div style={{display: "flex", margin: "0 auto"}}>
-                                                    <Button style={{width: "40px", height: "40px"}}
-                                                            onClick={this.minusQuantity.bind(this, item.quantity, item.id)}>
-                                                        <FontAwesomeIcon icon={faMinus}/>
-                                                    </Button>
-                                                    <Form style={{width: "75px", height: "75px"}}>
-                                                        <Form.Group as={Col} controlId="formBasicLogin">
-                                                            <Form.Control
-                                                                required autoComplete="off"
-                                                                type="text"
-                                                                name={"quantity"}
-                                                                value={item.quantity}
-                                                                onChange={this.accountChange}
-                                                                className={"bg-light text-dark"}
-                                                            />
-                                                        </Form.Group>
-                                                    </Form>
-                                                    <Button
-                                                        style={{width: "40px", height: "40px", marginRight: "-50px"}}
-                                                        onClick={this.plusQuantity.bind(this, item.quantity, item.id)}>
-                                                        <FontAwesomeIcon icon={faPlus}/>
-                                                    </Button>
-                                                    {/*<Form.Group controlId="exampleForm.SelectCustom">*/}
-                                                    {/*    <Form.Label> </Form.Label>*/}
-                                                    {/*    <Form.Control*/}
-                                                    {/*        style={{overflowY: "scroll"}}*/}
-                                                    {/*        as="select"*/}
-                                                    {/*        onChange={this.changeQuantity.bind(this, item.id)}*/}
-                                                    {/*        custom>*/}
-                                                    {/*        /!*{elements.map((value, index) => {*!/*/}
-                                                    {/*        /!*    <option value={value}>{value}</option>*!/*/}
-                                                    {/*        /!*})}*!/*/}
-                                                    {/*        <option value={item.quantity}>{item.quantity}</option>*/}
-                                                    {/*        <option value={1}>1</option>*/}
-                                                    {/*        <option value={2}>2</option>*/}
-                                                    {/*        <option value={3}>3</option>*/}
-                                                    {/*        <option value={4}>4</option>*/}
-                                                    {/*        <option value={5}>5</option>*/}
-                                                    {/*        /!*<option value={6}>6</option>*!/*/}
-                                                    {/*        /!*<option value={7}>7</option>*!/*/}
-                                                    {/*        /!*<option value={8}>8</option>*!/*/}
-                                                    {/*    </Form.Control>*/}
-                                                    {/*</Form.Group>*/}
+                                    <h1></h1> :
+                                    <div>
+                                        <div style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}>
+                                            <Button variant={"outline-danger"}
+                                                    onClick={this.deleteAllGoods.bind()}
+                                                    style={{
+                                                        width: "250px",
+                                                        height: "75px", textSize: "25px", borderRadius: "12px",
+                                                    }}>
+                                                {/*<FontAwesomeIcon icon={faTrash}/> Отчистить корзину*/}
+                                                <div style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    verticalAlign: "center",
+                                                }}><FontAwesomeIcon icon={faTrash}
+                                                                    style={{marginRight: "2%", fontSize: "30px",}}/>
+                                                    <div><p style={{marginBottom: "0", fontSize: "18px"}}>Удалить все
+                                                        товары</p>
+                                                    </div>
                                                 </div>
-                                            </td>
-                                            <td>{item.price}</td>
-                                            <td>
-                                                <ButtonGroup>
-                                                    {/*<Button size={"sm"} variant={"outline-primary"}>*/}
-                                                    {/*    <FontAwesomeIcon icon={faSignInAlt}/>*/}
-                                                    {/*</Button>*/}
-                                                    {/*{' '}*/}
-                                                    <Button size={"sm"} variant={"outline-danger"}
-                                                            onClick={this.deleteGood.bind(this, item.id)}>
-                                                        <FontAwesomeIcon icon={faTrash}/>
-                                                    </Button>
-                                                </ButtonGroup>
-                                            </td>
-                                        </tr>
-                                    ))}
-                            </tbody>
-                        </Table>
-                    </Card.Body>
-                    <Card.Footer>
-                        {
-                            this.state.items.length === 0 ?
-                                <Link to={"/products/1"}><h4>Выберите товары из каталога!</h4></Link>
-                                :
-                                <div>
-                                    <h4>Итговая стоимость покупки: {this.state.totalPrice} руб.</h4>
-                                    <ButtonGroup>
-                                        <Button size={"sm"} variant={"outline-primary"}
-                                                onClick={this.createOrder.bind()}>
-                                            <FontAwesomeIcon icon={faSignInAlt}/> Оформить заказ
-                                        </Button>
-                                        {' '}
-                                        <Button size={"sm"} variant={"outline-danger"}
-                                                onClick={this.deleteAllGoods.bind()}>
-                                            <FontAwesomeIcon icon={faTrash}/> Отчистить корзину
-                                        </Button>
-                                    </ButtonGroup>
-                                </div>
-                        }
-                    </Card.Footer>
-                </Card>
-                <Modal onExit={this.goHome.bind(this)} show={this.state.myShow}
-                       onHide={this.switchState.bind(this, false)}
-                       centered
-                       size={"sm"}>
-                    <Form onSubmit={this.ordSubmit} id={"RegistrationFormId"}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Авторизация</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <Form.Row>
-                                <Form.Group as={Col} controlId="formBasicLogin">
-                                    <Form.Label>Ваш заказ принят. Номер заказа {this.state.orderId}</Form.Label>
-                                </Form.Group>
-                            </Form.Row>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="primary" type="submit">
-                                ОК
-                            </Button>
-                        </Modal.Footer>
-                    </Form>
-                </Modal>
-            </>
+                                            </Button>
+                                            <Button size={"sm"} variant={"outline-success"}
+                                                    onClick={this.createOrder.bind()} style={{
+                                                width: "250px",
+                                                height: "75px",
+                                                fontSize: "25px",
+                                                borderRadius: "12px",
+                                                marginLeft: "auto",
+                                            }}>
+                                                <FontAwesomeIcon icon={faSignInAlt}/> Оформить заказ
+                                            </Button>
+                                        </div>
+                                    </div>
+                            }
+                            </Card.Footer>
+                        </Card>
+
+                        {/*<div>*/}
+                        {/*    {*/}
+                        {/*        this.state.items.length === 0 ?*/}
+                        {/*            <Link to={"/products/1"}> </Link>*/}
+                        {/*            :*/}
+                        {/*            <Card style={{*/}
+                        {/*                width: "60%",*/}
+                        {/*                marginLeft: "14%",*/}
+                        {/*                marginTop: "35px",*/}
+                        {/*                marginBottom: "10%",*/}
+                        {/*            }}>*/}
+                        {/*                <Card.Body>*/}
+                        {/*                    <div >*/}
+                        {/*                        <ListGroup variant="flush" style={{fontSize: "20px", paddingTop: "0", marginBottom: "10px"}}>*/}
+                        {/*                            <ListGroup.Item>Всего*/}
+                        {/*                                товаров: {this.state.sumQuantity}</ListGroup.Item>*/}
+                        {/*                            <ListGroup.Item>Итоговая стоимость: {this.state.totalPrice} руб.</ListGroup.Item>*/}
+                        {/*                        </ListGroup>*/}
+                        {/*                        <ButtonGroup>*/}
+                        {/*                            <Button size={"sm"} variant={"outline-success"}*/}
+                        {/*                                    onClick={this.createOrder.bind()} style={{*/}
+                        {/*                                width: "250px",*/}
+                        {/*                                height: "75px",*/}
+                        {/*                                fontSize: "25px",*/}
+                        {/*                                borderRadius: "12px",*/}
+                        {/*                            }}>*/}
+                        {/*                                <FontAwesomeIcon icon={faSignInAlt}/> Оформить заказ*/}
+                        {/*                            </Button>*/}
+                        {/*                        </ButtonGroup>*/}
+                        {/*                    </div>*/}
+                        {/*                </Card.Body>*/}
+                        {/*            </Card>*/}
+                        {/*    }*/}
+                        {/*</div>*/}
+                        <Modal onExit={this.goHome.bind(this)} show={this.state.myShow}
+                               onHide={this.switchState.bind(this, false)}
+                               centered
+                               size={"sm"}>
+                            <Form onSubmit={this.ordSubmit} id={"RegistrationFormId"}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Заказ</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <Form.Row>
+                                        <Form.Group as={Col} controlId="formBasicLogin">
+                                            <Form.Label>Ваш заказ принят на обработку. Номер
+                                                заказа {this.state.orderId}</Form.Label>
+                                        </Form.Group>
+                                    </Form.Row>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="primary" type="submit">
+                                        ОК
+                                    </Button>
+                                </Modal.Footer>
+                            </Form>
+                        </Modal>
+                    </div>
+                }
+            </div>
         );
     }
 }

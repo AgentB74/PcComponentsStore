@@ -7,6 +7,7 @@ import {Link} from "react-router-dom";
 import axios from "axios";
 import Logo from "../../static/img/Logo4.png";
 import {forEach} from "react-bootstrap/cjs/ElementChildren";
+import MyToast from "./MyToast";
 // import Col from "react-bootstrap/Col";
 
 export default class ProductList extends React.Component {
@@ -17,7 +18,8 @@ export default class ProductList extends React.Component {
             id: "",
             name: "",
             userId: 1,
-            quantity: 1
+            quantity: 1,
+            ToastShow: false, ToastType: "", ToastMessage: ""
         };
         this.state.id = this.props.match.params.categ_id
         console.log("constructor()");
@@ -54,21 +56,30 @@ export default class ProductList extends React.Component {
     // }
 
     inBasket = (goodId, goodPrice) => {
-        axios.post("http://127.0.0.1:8000/api/cart/add/" + this.state.userId, {
-            cart: this.state.userId,
-            product: goodId,
-            quantity: this.state.quantity,
-            price: goodPrice
-        })
-            .then(response => {
-                if (response.data != null) {
-                    // this.setState({"show": true});
-                    this.setState(() => this.initialState);
-                    // setTimeout(() => this.setState({"show": false}), 2000);
-                } else {
-                    // this.setState({"show": false})
-                }
+        if (localStorage.getItem('id') !== '0') {
+            this.state.userId = localStorage.getItem('id')
+            console.log(this.state.userId)
+            axios.post("http://127.0.0.1:8000/api/cart/add/" + this.state.userId, {
+                product: goodId,
+                quantity: Number(this.state.quantity),
+                price: Number(goodPrice)
             })
+                .then(response => {
+                    if (response.data != null) {
+                        // this.setState({"show": true});
+                        this.setState(() => this.initialState);
+                        this.props.history.push('/basket');
+                        // setTimeout(() => this.setState({"show": false}), 2000);
+                    } else {
+                        // this.setState({"show": false})
+                    }
+                })
+        } else {
+            this.setState({"ToastShow": true});
+            this.setState({"ToastType": "danger"});
+            this.setState({"ToastMessage": "Пожалуйста авторизируйтесь!"});
+            setTimeout(() => this.setState({"ToastShow": false}), 2500);
+        }
     };
 
     changeQuantity = (event) => {
@@ -111,58 +122,81 @@ export default class ProductList extends React.Component {
             paddingRight: "10px",
         }
         return (
-            <Jumbotron
-                style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    marginLeft: "14%",
-                    marginTop: "35px",
-                    width: "1040px",
-                    backgroundColor: "#f6f6f6"
-                }}>
-                {this.state.products.length === 0 ?
-                    <h1>Товаров нет. Загляните позже и обязательно следите за обновлениями!</h1> :
-                    this.state.products.map((product) => (
-                        <Card style={{width: '14rem', marginRight: "20px", marginBottom: "20px"}} className={"d-flex"}>
-                            {/*<Card.Header><FontAwesomeIcon icon={faList}/>LIST</Card.Header>*/}
-                            <Card.Img src={product.image} alt={"img 200x200px"} style={img}/>
-                            <Card.Body style={{height: "150px"}}>
-                                <Card.Title style={{fontSize: "15px"}}>
-                                    <Link to={{pathname: `/product/${product.id}`}}>
-                                        {product.name}
-                                    </Link>
-                                </Card.Title>
-                                <Card.Text>{product.price} руб.</Card.Text>
-                            </Card.Body>
-                            <Card.Footer>
-                                {/*<small className="text-muted">Last updated 3 mins ago</small>*/}
-                                <Button variant="primary" onClick={this.inBasket.bind(this, product.id, product.price)}>
-                                    В корзину
-                                </Button>
-                                <Form>
-                                    <Form.Group controlId="exampleForm.SelectCustom">
-                                        <Form.Label> </Form.Label>
-                                        <Form.Control
-                                            style={{overflowY: "scroll"}}
-                                            as="select"
-                                            onChange={this.changeQuantity.bind()}
-                                            custom>
-                                            <option value={1}>1</option>
-                                            <option value={2}>2</option>
-                                            <option value={3}>3</option>
-                                            <option value={4}>4</option>
-                                            <option value={5}>5</option>
-                                            {/*<option value={6}>6</option>*/}
-                                            {/*<option value={7}>7</option>*/}
-                                            {/*<option value={8}>8</option>*/}
-                                        </Form.Control>
-                                    </Form.Group>
-                                </Form>
-                            </Card.Footer>
-                        </Card>
-                    ))
-                }
-            </Jumbotron>
+            <div>
+                <div style={{"display": this.state.ToastShow ? "block" : "none"}}>
+                    <MyToast children={{
+                        show: this.state.ToastShow, message: this.state.ToastMessage,
+                        type: this.state.ToastType
+                    }}/>
+                </div>
+                <Jumbotron
+                    style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                        marginLeft: "14%",
+                        marginTop: "35px",
+                        paddingTop: "40px",
+                        marginBottom: "70px",
+                        width: "94%",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #ecebeb",
+                    }}>
+                    {this.state.products.length === 0 ?
+                        <h1>Товаров нет. Загляните позже и обязательно следите за обновлениями!</h1> :
+                        this.state.products.map((product) => (
+                            <Card style={{width: '14rem', marginBottom: "20px"}}
+                                  className={"d-flex"}>
+                                <Card.Img src={product.image} alt={"img 200x200px"} style={img}/>
+                                {/*<Card.Header> <Link to={{pathname: `/product/${product.id}`}}>*/}
+                                {/*    {product.name}*/}
+                                {/*</Link>*/}
+                                {/*</Card.Header>*/}
+                                <Card.Body style={{height: "150px", textAlign: "center"}}>
+                                    <Card.Title style={{height: "85px"}}>
+                                        <Link to={{pathname: `/product/${product.id}`}}>
+                                            {product.name}
+                                        </Link>
+                                    </Card.Title>
+                                    <Card.Text style={{fontSize: "18px"}}>{product.price} руб.</Card.Text>
+                                </Card.Body>
+                                <Card.Footer>
+                                    {/*<small className="text-muted">Last updated 3 mins ago</small>*/}
+                                    <div style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between"
+                                    }}>
+                                        <Form>
+                                            <Form.Group controlId="exampleForm.SelectCustom" style={{marginBottom: "0"}}>
+                                                <Form.Label> </Form.Label>
+                                                <Form.Control
+                                                    style={{overflowY: "scroll"}}
+                                                    as="select"
+                                                    onChange={this.changeQuantity.bind()}
+                                                    custom>
+                                                    <option value={1}>1</option>
+                                                    <option value={2}>2</option>
+                                                    <option value={3}>3</option>
+                                                    <option value={4}>4</option>
+                                                    <option value={5}>5</option>
+                                                    {/*<option value={6}>6</option>*/}
+                                                    {/*<option value={7}>7</option>*/}
+                                                    {/*<option value={8}>8</option>*/}
+                                                </Form.Control>
+                                            </Form.Group>
+                                        </Form>
+                                        <Button variant="primary"
+                                                onClick={this.inBasket.bind(this, product.id, product.price)}>
+                                            <div>В корзину</div>
+                                        </Button>
+                                    </div>
+                                </Card.Footer>
+                            </Card>
+                        ))
+                    }
+                </Jumbotron>
+            </div>
         );
     }
 }

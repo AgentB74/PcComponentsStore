@@ -19,7 +19,8 @@ export default class Registration extends React.Component {
     initialState = {
         username: '', password: '', firstName: '',
         lastName: '', email: '', telephoneNumb: '',
-        ToastShow: false, ToastType: "", ToastMessage: ""
+        ToastShow: false, ToastType: "", ToastMessage: "",
+        right: false
     }
 
 
@@ -38,19 +39,23 @@ export default class Registration extends React.Component {
                 email: this.state.email,
                 telephone_numb: this.state.telephoneNumb
             }).then(response => {
+            console.log(response.data)
             if (response.data != null) {
                 this.setState({"ToastShow": true});
-                this.setState({"ToastType": "success!"});
+                this.setState({"ToastType": "success"});
                 this.setState({"ToastMessage": "Аккаунт создан успешно!"});
-                setTimeout(() => this.setState({"ToastShow": false}), 1500);
-                this.props.history.push('/')
-            } else {
-                this.setState({"ToastShow": true});
-                this.setState({"ToastType": "danger"});
-                this.setState({"ToastMessage": "Ошибка при создании аккаунта!"});
-                setTimeout(() => this.setState({"ToastShow": false}), 1500);
+                this.setState({"right": true});
+                // this.setState({"ToastShow": false})
+                setTimeout(() => this.props.history.push('/'), 3500);
             }
         });
+        if (!this.state.right) {
+            console.log("3")
+            this.setState({"ToastShow": true});
+            this.setState({"ToastType": "danger"});
+            this.setState({"ToastMessage": "Ошибка при создании аккаунта!"});
+            setTimeout(() => this.setState({"ToastShow": false}), 1500);
+        }
         // this.setState(this.initialState);
         // setTimeout(() => this.props.history.push('/TicTacToeGame'), 1000);
     }
@@ -61,16 +66,21 @@ export default class Registration extends React.Component {
 
     render() {
         const {username, password, firstName, lastName, email, telephoneNumb} = this.state;
-        const MyStyle = {
-            display: "flex",
-            flexWrap: "wrap",
-            marginLeft: "34%",
-            marginTop: "25px",
+        const myCardStyle = {
+            // display: "flex",
+            // flexWrap: "wrap",
+            marginLeft: "25%",
+            marginTop: "15px",
             marginBottom: "60px",
-            width: "540px",
-            backgroundColor: "#d9d7d7"
+            width: "60%",
+            backgroundColor: "#ffffff",
+            justifyContent: "spaceBetween"
         }
 
+        const myFormStyle = {
+            display: "flex",
+            flexDirection: "row",
+        }
         return (
             <div>
                 <div style={{"display": this.state.ToastShow ? "block" : "none"}}>
@@ -79,11 +89,11 @@ export default class Registration extends React.Component {
                         type: this.state.ToastType
                     }}/>
                 </div>
-                <Card style={MyStyle}>
-                    <Card.Header><h2>Регистрация</h2></Card.Header>
+                <Card style={myCardStyle}>
+                    <Card.Header><div style={{"marginLeft": "12px"}}><h2>Регистрация</h2></div></Card.Header>
                     <Form onReset={this.resetAccount.bind()} onSubmit={this.submitAccount} id={"RegistrationFormId"}>
-                        <Card.Body>
-                            <Form>
+                        <Card.Body style={{"fontSize": "18px",}}>
+                            <Form style={{myFormStyle}}>
                                 <Form.Group as={Col} controlId="formBasicLogin">
                                     <Form.Label>Имя</Form.Label>
                                     <Form.Control
@@ -94,6 +104,7 @@ export default class Registration extends React.Component {
                                         onChange={this.accountChange}
                                         className={"bg-light text-dark"}
                                         placeholder="Введите имя"
+                                        style={{"fontSize": "18px", "marginBottom": "10px"}}
                                     />
                                     <Form.Label>Фамилия</Form.Label>
                                     <Form.Control
@@ -104,6 +115,7 @@ export default class Registration extends React.Component {
                                         onChange={this.accountChange}
                                         className={"bg-light text-dark"}
                                         placeholder="Введите фамилию"
+                                        style={{"fontSize": "18px", "marginBottom": "12px"}}
                                     />
                                     <Form.Label>Номер телефона</Form.Label>
                                     <Form.Control
@@ -114,11 +126,12 @@ export default class Registration extends React.Component {
                                         onChange={this.accountChange}
                                         className={"bg-light text-dark"}
                                         placeholder="+79009009090"
+                                        style={{"fontSize": "18px", "marginBottom": "12px"}}
                                     />
                                 </Form.Group>
                             </Form>
-                            <Form.Row>
-                                <Form.Group as={Col} controlId="formBasicLogin">
+                            <Form style={{"fontSize": "20px", "display": "flex", "flexDirection": "row",}}>
+                                <Form.Group as={Col} controlId="formBasicEmail">
                                     <Form.Label>E-mail</Form.Label>
                                     <Form.Control
                                         required autoComplete="off"
@@ -128,6 +141,7 @@ export default class Registration extends React.Component {
                                         onChange={this.accountChange}
                                         className={"bg-light text-dark"}
                                         placeholder="name@example.com"
+                                        style={{"fontSize": "18px", "marginBottom": "12px"}}
                                     />
                                     <Form.Label>Логин</Form.Label>
                                     <Form.Control
@@ -138,6 +152,7 @@ export default class Registration extends React.Component {
                                         onChange={this.accountChange}
                                         className={"bg-light text-dark"}
                                         placeholder="Example1"
+                                        style={{"fontSize": "18px", "marginBottom": "12px"}}
                                     />
                                 </Form.Group>
                                 <Form.Group as={Col} controlId="formBasicLogin">
@@ -152,6 +167,7 @@ export default class Registration extends React.Component {
                                         onChange={this.accountChange}
                                         className={"bg-light text-dark"}
                                         placeholder="Введите пароль"
+                                        style={{"fontSize": "18px", "marginBottom": "12px"}}
                                     />
                                     <Form.Label>Повторите пароль</Form.Label>
                                     <Form.Control
@@ -162,27 +178,29 @@ export default class Registration extends React.Component {
                                         onChange={this.accountChange}
                                         className={"bg-light text-dark"}
                                         placeholder="Повторите пароль"
+                                        style={{"fontSize": "18px"}}
                                     />
                                 </Form.Group>
-                                {/*<Form.Group as={Col} controlId="formBasicLogin">*/}
-                                {/*<Form.Text className="text-muted">*/}
-                                {/*    We'll never share your email with anyone else.*/}
-                                {/*</Form.Text>*/}
-                                {/*</Form.Group>*/}
-                            </Form.Row>
+                            </Form>
+                            {/*<Form.Group as={Col} controlId="formBasicLogin">*/}
+                            {/*<Form.Text className="text-muted">*/}
+                            {/*    We'll never share your email with anyone else.*/}
+                            {/*</Form.Text>*/}
+                            {/*</Form.Group>*/}
                             {/*<Form.Group controlId="formBasicCheckbox">*/}
                             {/*    <Form.Check type="checkbox"*/}
                             {/*                label="Check me out"/>*/}
                             {/*</Form.Group>*/}
                         </Card.Body>
-                        <Card.Footer style={{"textAlign": "right"}}>
-                            <Button variant="success" type="submit">
+                        <Card.Footer
+                            // style={{"display": "flex", "flexDirection": "row", "justifyContent": "space-between"}}>
+                            style={{"textAlign": "right"}}>
+                            <Button variant="success" type="submit" style={{"fontSize": "24px","marginRight":"12px"}}>
                                 <FontAwesomeIcon icon={faSave}/> Зарегистрироваться
                             </Button>
-                            {' '}
-                            <Button variant="info" type="reset">
-                                <FontAwesomeIcon icon={faUndo}/> Отчистить поля
-                            </Button>
+                            {/*<Button variant="info" type="reset" style={{"fontSize": "22px",}}>*/}
+                            {/*    <FontAwesomeIcon icon={faUndo}/> Отмена*/}
+                            {/*</Button>*/}
                         </Card.Footer>
                     </Form>
                 </Card>

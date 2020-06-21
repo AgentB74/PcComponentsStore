@@ -16,7 +16,7 @@ export default class NavigationBar extends React.Component {
     }
 
     initialState = {
-        show: false, login: '', password: '', id: 0
+        show: false, login: '', password: '', id: 0, user: []
     }
 
     resetAccount = () => {
@@ -27,51 +27,58 @@ export default class NavigationBar extends React.Component {
         this.setState({"show": state});
     }
 
+    signOut = () => {
+        localStorage.setItem('id', '0')
+        // this.props.history.push('/products/1');
+        location.reload()
+    }
+
     submitAccount = event => {
         event.preventDefault();
-
+        axios.get("http://127.0.0.1:8000/api/customers/" + this.state.login)
+            .then(response => response.data)
+            .then((data) => {
+                console.log(data)
+                this.setState({"user": data})
+                console.log(this.state.user)
+                this.state.user.map((MyUser) => (
+                    localStorage.setItem('id', MyUser.pk),
+                        localStorage.setItem('userName', MyUser.first_name)
+                ))
+                this.switchState(false)
+                location.reload()
+            });
     }
 
     accountChange = event => {
         this.setState({[event.target.name]: event.target.value});
     }
 
-    test = event => {
-        event.preventDefault();
-        axios.get("http://127.0.0.1:8000/api/users/", {
-            headers: {
-                Authorization: `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNTk2NTI0Mjg0fQ.Cn_BTXKpUF9TGJRo9CXDy9RxtQJXxcnkxKKYaMzLn_E`
-            }
-        })
-    }
-
     render() {
         const {show, login, password} = this.state;
 
         const myFontSize = {
-            fontSize: "20px",
+            fontSize: "22px",
         }
         const myFontSize2 = {
-            fontSize: "20px",
+            fontSize: "22px",
             // marginLeft: "45%"
             // position: "absolute",
         }
         const myMargin = {
-            marginTop: "155px",
+            marginTop: "145px",
             backgroundColor: "#2eabef",
         }
 
         const fromStyle = {
+            fontSize: "20px",
             width: "250px",
+            marginBottom: "15px"
         }
 
         return (
             <>
                 <Navbar variant="dark" style={myMargin}>
-                    {/*<Link to={""} className="navbar-brand">*/}
-                    {/*    /!*<img src="https://image.flaticon.com/icons/svg/566/566294.svg" width="45"*!/*/}
-                    {/*    /!*     height="45" alt="brand"/>*!/*/}
-                    {/*</Link>*/}
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto" style={myFontSize}>
@@ -83,7 +90,7 @@ export default class NavigationBar extends React.Component {
                             <a className={"nav-link"} style={myFontSize}>
                                 <NavDropdown title="Периферия" size="lg" id="basic-nav-dropdown">
                                     <NavDropdown.Item href="/products/12">Клавиатуры</NavDropdown.Item>
-                                    <NavDropdown.Item href="/products/13">Компьюетрные мыши</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/13">Компьютерные мыши</NavDropdown.Item>
                                     <NavDropdown.Item href="/products/14">Наушники</NavDropdown.Item>
                                     <NavDropdown.Item href="/products/15">Веб-камеры</NavDropdown.Item>
                                     <NavDropdown.Item href="/products/16">Акустические системы</NavDropdown.Item>
@@ -94,14 +101,14 @@ export default class NavigationBar extends React.Component {
                             </a>
                             <a className={"nav-link"} style={myFontSize}>
                                 <NavDropdown title="Комплектующие" id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="/products/12">Процессор</NavDropdown.Item>
-                                    <NavDropdown.Item href="/products/13">Материнская плата</NavDropdown.Item>
-                                    <NavDropdown.Item href="/products/14">Видеокарта</NavDropdown.Item>
-                                    <NavDropdown.Item href="/products/15">Блок питания</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/12">Процессоры</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/13">Материнские платы</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/14">Видеокарты</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/15">Блоки питания</NavDropdown.Item>
                                     <NavDropdown.Item href="/products/16">Модули памяти</NavDropdown.Item>
-                                    <NavDropdown.Item href="/products/17">Звуковая карта</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/17">Звуковые карты</NavDropdown.Item>
                                     <NavDropdown.Item href="/products/17">Кулеры и системы охлаждения</NavDropdown.Item>
-                                    <NavDropdown.Item href="/products/17">Жесткий диск</NavDropdown.Item>
+                                    <NavDropdown.Item href="/products/17">Жесткие диски</NavDropdown.Item>
                                     <NavDropdown.Item href="/products/17">Корпуса</NavDropdown.Item>
                                     {/*<NavDropdown.Divider/>*/}
                                     {/*<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>*/}
@@ -133,13 +140,19 @@ export default class NavigationBar extends React.Component {
                             </a>
                         </Nav>
                         <Nav style={myFontSize}>
-                            {this.state.id !== 0 ?
-                                <Link onClick={this.switchState.bind(this, true)} className="nav-link">
-                                    <FontAwesomeIcon style={{fontSize: "22px"}} icon={faSignOutAlt}/>
-                                </Link> :
-                                <Link onClick={this.switchState.bind(this, true)} className="nav-link">
-                                    <FontAwesomeIcon style={{fontSize: "22px"}} icon={faSignInAlt}/>
-                                </Link>
+                            {localStorage.getItem('id') !== '0' ?
+                                <>
+                                    <a className={"nav-link"} style={myFontSize}>Добро
+                                        пожаловать, {localStorage.getItem('userName')}</a>
+                                    <Link onClick={this.signOut.bind(this)} className="nav-link">
+                                        <FontAwesomeIcon style={{fontSize: "22px"}} icon={faSignOutAlt}/>
+                                    </Link>
+                                </> :
+                                <>
+                                    <Link onClick={this.switchState.bind(this, true)} className="nav-link">
+                                        <FontAwesomeIcon style={{fontSize: "22px"}} icon={faSignInAlt}/>
+                                    </Link>
+                                </>
                             }
                             {/*<Link to={"/basket"} className="nav-link"><FontAwesomeIcon icon={faShoppingBasket}/></Link>*/}
 
@@ -151,13 +164,13 @@ export default class NavigationBar extends React.Component {
                        centered
                        size={"sm"}>
                     <Form onReset={this.resetAccount.bind()}
-                        // onSubmit={this.submitAccount}
-                          onSubmit={e => this.props.name(e, this.state)}
+                          onSubmit={this.submitAccount}
+                        //   onSubmit={e => this.props.name(e, this.state)}
                           id={"RegistrationFormId"}>
                         <Modal.Header closeButton>
                             <Modal.Title>Авторизация</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>
+                        <Modal.Body style={{"fontSize": "20px"}}>
                             <Form.Row>
                                 <Form.Group as={Col} controlId="formBasicLogin">
                                     <Form.Label>E-mail</Form.Label>
@@ -195,9 +208,6 @@ export default class NavigationBar extends React.Component {
                             </Button>
                             <Button variant="primary" type="submit">
                                 Войти
-                            </Button>
-                            <Button onClick={this.test.bind(this)}>
-                                test
                             </Button>
                         </Modal.Footer>
                     </Form>
