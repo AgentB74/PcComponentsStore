@@ -1,31 +1,23 @@
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-from cart.forms import CartAddProductForm
-from django.shortcuts import render, get_object_or_404
+from rest_framework.views import APIView
 from .models import News
-from .serializers import NewsSerializer
+from .serializers import NewSerializer
 
 
-# Create your views here.
-@api_view(['GET'])
-def api_news_list(request):
-    data = []
-    next_page = 1
-    previous_page = 1
-    news = News.objects.all()
-    page = request.GET.get('page', 1)
-    paginator = Paginator(news, 10)
-    try:
-        data = paginator.page(page)
-    except PageNotAnInteger:
-        data = paginator.page(1)
-    except EmptyPage:
-        data = paginator.page(paginator.num_pages)
+class NewsList(APIView):
+    """
+    List all news, or create a new.
+    """
 
-    serializer = NewsSerializer(data, context={'request': request}, many=True)
-    print(serializer.data)
-    return Response(serializer.data)
+    def get(self, request, format=None):
+        news = News.objects.all()
+        serializer = NewSerializer(news, context={'request': request}, many = True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = NewSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

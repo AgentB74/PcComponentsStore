@@ -7,5 +7,3 @@ from .models import News
 class NewsAdmin(admin.ModelAdmin):
     list_display = ['id', 'product', 'description', 'created']
     list_filter = ['created']
-    # list_editable = ['price', 'available']
-    # prepopulated_fields = {'slug': ('name',)}
