@@ -56,18 +56,8 @@ urlpatterns = [
 
     url(r'^api/order/create/(?P<user_id>[0-9]+)$', orders_views.api_create_order),
 
-    url(r'^api/news/$', news_views.api_news_list),
+    url(r'^api/news/$', news_views.NewsList.as_view()),
 
-    # path('', HomeView.as_view(), name='home'),
-    # path('about/', AboutView.as_view(), name='about'),
-    # path('catalog/', CatalogView.as_view(), name='catalog'),
-    # path('checkout/', CheckoutView.as_view(), name='checkout'),
-    # path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
-    # path('product/<slug>/', ItemDetailView.as_view(), name='product'),
-    # path('add-to-cart/<slug>/', add_to_cart, name='add-to-cart'),
-    # path('remove-from-cart/<slug>/', remove_from_cart, name='remove-from-cart'),
-    # path('remove-item-from-cart/<slug>/', remove_single_item_from_cart,
-    #      name='remove-single-item-from-cart'),
 ]
 
 if settings.DEBUG:
