@@ -1,10 +1,9 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 app_name = 'cart'
 
 urlpatterns = [
-    path('', views.cart_detail, name='cart_detail'),
-    path('add/<int:product_id>/', views.cart_add, name='cart_add'),
-    path('remove/<int:product_id>/', views.cart_remove, name='cart_remove'),
+    re_path(r'^detail/(?P<pk>[0-9]+)$', views.CartDetail.as_view()),
+    re_path(r'^item/(?P<pk>[0-9]+)$', views.CartItemDetail.as_view()),
 ]

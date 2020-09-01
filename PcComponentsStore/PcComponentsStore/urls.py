@@ -20,7 +20,6 @@ from django.conf.urls.static import static
 from basic import views
 from users import views as user_views, endpoints
 from goods import views as goods_views
-from cart import views as cart_views
 from news import views as news_views
 from orders import views as orders_views
 
@@ -40,19 +39,14 @@ urlpatterns = [
     url(r'^api/customers/$', user_views.customers_list),
     url(r'^api/customers/(?P<pk>[0-9]+)$', user_views.customers_detail),
     # url(r'^api/customers/authorize/$', user_views.customer),
-    path('cart/', include('cart.urls')),
-    path('orders/', include('orders.urls')),
+    path('api/cart/', include('cart.urls')),
+    # path('orders/', include('orders.urls')),
     path('products/', include('goods.urls')),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/img/favicon.ico'), name='favicon'),
 
     url(r'^api/products/$', goods_views.api_prod_list),
     url(r'^api/products/(?P<category_id>[0-9]+)$', goods_views.api_prod_list_by_category),
     url(r'^api/product/(?P<prod_id>[0-9]+)$', goods_views.api_prod_detail),
-
-    url(r'^api/cart/(?P<user_id>[0-9]+)$', cart_views.api_cart),
-    url(r'^api/cart/(?P<user_id>[0-9]+)/(?P<cart_prod_id>[0-9]+)$', cart_views.api_cart_good),
-    url(r'^api/cart/(?P<user_id>[0-9]+)/(?P<cart_prod_id>[0-9]+)/(?P<prod_qu>[0-9]+)$', cart_views.api_cart_good_change),
-    url(r'^api/cart/add/(?P<user_id>[0-9]+)$', cart_views.api_cart_add_good),
 
     url(r'^api/order/create/(?P<user_id>[0-9]+)$', orders_views.api_create_order),
 
