@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from basic import views
@@ -29,7 +29,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.homeView),
+    path('', views.IndexView.as_view()),
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
 
@@ -45,11 +45,10 @@ urlpatterns = [
     path('products/', include('goods.urls')),
     url(r'^favicon\.ico$', RedirectView.as_view(url='/static/img/favicon.ico'), name='favicon'),
 
-    url(r'^api/products/$', goods_views.api_prod_list),
-    url(r'^api/products/(?P<category_id>[0-9]+)$', goods_views.api_prod_list_by_category),
-    url(r'^api/product/(?P<prod_id>[0-9]+)$', goods_views.api_prod_detail),
+    re_path(r'^api/product/(?P<prod_id>[0-9]+)$', goods_views.GoodDetail.as_view()),
+    re_path(r'^api/products/(?P<category>[\w\-]+)$', goods_views.GoodList.as_view()),
 
-    url(r'^api/order/create/(?P<user_id>[0-9]+)$', orders_views.api_create_order),
+    re_path(r'^api/order/create/(?P<user_id>[0-9]+)$', orders_views.OrderDetail.as_view()),
 
     url(r'api/cart/add/(?P<pk>[0-9]+)$', test_v.CartDetail.as_view()),
 
