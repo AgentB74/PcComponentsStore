@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from basic import views
+# from basic import views
 from users import views as user_views, endpoints
 from goods import views as goods_views
 from news import views as news_views
@@ -29,7 +29,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.IndexView.as_view()),
+    # path('', views.IndexView.as_view()),
     path('users/', include('users.urls')),
     path('users/', include('django.contrib.auth.urls')),
 
